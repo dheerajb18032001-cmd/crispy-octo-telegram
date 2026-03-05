@@ -1,0 +1,12 @@
+services:
+  - name: tea-site
+    type: web
+    repo: dheerajb18032001-cmd/crispy-octo-telegram
+    branch: main
+    env: docker
+    autoDeploy: true
+    plan: free
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: PORT
+        value: "3000"

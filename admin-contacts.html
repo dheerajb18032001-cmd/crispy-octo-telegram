@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin — Contacts</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+      .admin-wrap{padding:28px}
+      .contacts-table{width:100%;border-collapse:collapse}
+      .contacts-table th,.contacts-table td{padding:8px;border:1px solid rgba(0,0,0,0.06);text-align:left}
+      .controls{margin-bottom:12px}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop" height="40"></a>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="order.html">Order</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container admin-wrap">
+      <h1>Stored Contacts</h1>
+      <div class="controls">
+        <button id="refresh-btn" class="btn">Refresh</button>
+      </div>
+      <div id="contacts-root">Loading…</div>
+    </main>
+
+    <footer class="site-footer"><div class="container"><p>&copy; Tea Shop</p></div></footer>
+
+    <script>
+      async function loadContacts(){
+        const root = document.getElementById('contacts-root');
+        root.textContent = 'Loading...';
+        try{
+          const res = await fetch('/api/contacts');
+          if(!res.ok) throw new Error('Network error');
+          const data = await res.json();
+          if(!data || data.length === 0){ root.innerHTML = '<p>No contacts stored.</p>'; return; }
+          const table = document.createElement('table');
+          table.className = 'contacts-table';
+          const thead = document.createElement('thead');
+          thead.innerHTML = '<tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Received At</th></tr>';
+          table.appendChild(thead);
+          const tbody = document.createElement('tbody');
+          data.forEach(item => {
+            const tr = document.createElement('tr');
+            const id = item.id ?? '';
+            const recv = item.receivedAt ? (new Date(item.receivedAt)).toLocaleString() : '';
+            tr.innerHTML = `<td>${id}</td><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.message)}</td><td>${recv}</td>`;
+            tbody.appendChild(tr);
+          });
+          table.appendChild(tbody);
+          root.innerHTML = '';
+          root.appendChild(table);
+        }catch(err){
+          root.innerHTML = '<p>Error loading contacts.</p>';
+          console.error(err);
+        }
+      }
+
+      function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+      document.addEventListener('DOMContentLoaded', function(){
+        document.getElementById('refresh-btn').addEventListener('click', loadContacts);
+        loadContacts();
+      });
+    </script>
+  </body>
+</html>

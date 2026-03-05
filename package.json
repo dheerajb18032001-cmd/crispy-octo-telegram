@@ -1,0 +1,23 @@
+{
+  "name": "tea-site",
+  "version": "1.0.0",
+  "description": "Static tea website with an optional Express server",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase": "^12.10.0",
+    "mysql2": "^3.3.0",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Contact — Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="order.html" class="cart">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="contact-hero">
+        <div class="contact-inner container">
+          <div class="contact-info">
+            <h1>Contact Us</h1>
+            <p class="contact-lead">We'd love to hear from you — whether it's feedback, a question, or catering inquiries. Send us a message and we'll get back shortly.</p>
+
+            <ul class="contact-list">
+              <li>
+                <span class="icon">📍</span>
+                <div>
+                  <strong>Address</strong>
+                  <div>4571 Sugar Camp Road, Owatonna, Minnesota, 55060</div>
+                </div>
+              </li>
+
+              <li>
+                <span class="icon">📞</span>
+                <div>
+                  <strong>Phone</strong>
+                  <div>507-475-6094</div>
+                </div>
+              </li>
+
+              <li>
+                <span class="icon">✉️</span>
+                <div>
+                  <strong>Email</strong>
+                  <div>hello@teashop.example</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <aside class="contact-card">
+            <form id="contact-form" class="send-message" action="/api/contact" method="POST">
+              <h3>Send Message</h3>
+              <div id="contact-feedback" role="status" aria-live="polite" style="margin-bottom:12px;color:var(--muted)"></div>
+              <label class="input-row">Full Name
+                <input name="name" id="name" required placeholder="Full Name">
+              </label>
+              <label class="input-row">Email
+                <input name="email" id="email" type="email" required placeholder="Email">
+              </label>
+              <label class="input-row">Message
+                <textarea name="message" id="message" required placeholder="Type your Message..."></textarea>
+              </label>
+              <div class="form-actions">
+                <button class="btn" id="contact-submit" type="submit" aria-label="Send">Send</button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/contact.js"></script>
+  </body>
+</html>

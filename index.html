@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body class="home" > 
+    <div class="page">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Tea Shop home">Tea Shop</a>
+        <div id="auth-ui" style="margin-right:12px;">
+          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
+        </div>
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+          <a href="index.html" aria-current="page">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-content container">
+      <section class="hero page-hero">
+        <div class="hero-inner">
+          <h1 class="hero-title">Welcome to Tea Shop</h1>
+          <p class="hero-sub">Handcrafted teas, cozy space, and friendly service.</p>
+          <div class="hero-actions" role="navigation" aria-label="Quick links">
+            <a class="btn btn--ghost" href="index.html">Home</a>
+            <a class="btn btn--outline" href="menu.html">Menu</a>
+            <a class="btn btn--outline" href="gallery.html">Gallery</a>
+            <a class="btn btn--outline" href="contact.html">Contact</a>
+            <a class="btn btn--success" href="order.html">Order</a>
+          </div>
+          <p style="margin-top:1rem"><a class="btn" href="menu.html">See the Menu</a></p>
+          <div class="yt-channel" style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+            <div class="g-ytsubscribe" data-channel="@TheLallantop" data-layout="default" data-theme="default" data-count="default"></div>
+            <a class="btn primary" href="https://www.youtube.com/@TheLallantop" target="_blank" rel="noopener">Visit our YouTube channel</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="features">
+        <article class="feature feature-1">
+          <h3>Fresh Ingredients</h3>
+          <p>We use high-quality loose leaf teas and fresh milk.</p>
+        </article>
+        <article class="feature feature-2">
+          <h3>Cozy Atmosphere</h3>
+          <p>Relax in our comfortable seating and enjoy free Wi‑Fi.</p>
+        </article>
+        <article class="feature feature-3">
+          <h3>Local Favorites</h3>
+          <p>Try our seasonal blends and house specials each week.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop — replace with your business name</p>
+      </div>
+    </footer>
+    
+    </div>
+
+    <script src="scripts/app.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <!-- Firebase SDK (compat) - replace placeholders with your project config -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      // Replace the following with your app's Firebase project configuration.
+      // You can find these values in the Firebase Console (Project Settings) or
+      // run `firebase apps:sdkconfig WEB` if you have a web app registered.
+      const firebaseConfig = {
+        apiKey: "AIzaSyDPHOcGwRxir9fMu4o4trpajK8p5a1s-C8",
+        authDomain: "teashop-71af9.firebaseapp.com",
+        projectId: "teashop-71af9",
+        storageBucket: "teashop-71af9.firebasestorage.app",
+        messagingSenderId: "480830622073",
+        appId: "1:480830622073:web:13316536f8575a6fbd47a8",
+        measurementId: "G-KCDVEW77SW"
+      };
+      firebase.initializeApp(firebaseConfig);
+      if (firebase.analytics) firebase.analytics();
+    </script>
+    <script src="scripts/firebase.js"></script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Your Order — Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="order.html" class="cart">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <h1>Your Order</h1>
+      <section id="cart">
+        <p id="empty-msg">Your cart is empty.</p>
+        <table id="cart-table" class="cart-table" hidden>
+          <thead>
+            <tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="cart-total" class="cart-total" hidden>
+          <strong>Total: $<span id="total-amt">0.00</span></strong>
+        </div>
+        <div class="cart-actions">
+          <button id="clear-cart" class="btn btn--danger btn--sm">Clear</button>
+          <button id="checkout" class="btn btn--success">Place Order (Pickup)</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/cart.js"></script>
+  </body>
+</html>

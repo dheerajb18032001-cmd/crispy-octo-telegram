@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>About — Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body class="about">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Tea Shop home"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html" aria-current="page">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="about-hero">
+        <div class="about-inner">
+          <div>
+            <h1>Our Story</h1>
+            <p class="about-lead">We began as a neighborhood tea stall and have grown into a cozy spot serving handcrafted teas and light bites. Come enjoy seasonal blends and friendly service.</p>
+            <p><a class="btn primary" href="menu.html">See the Menu</a></p>
+          </div>
+          <div>
+            <img class="about-hero-image" src="assets/photos/interior.svg" alt="Cozy interior of the shop">
+          </div>
+        </div>
+      </section>
+
+      <section class="container content about-content">
+        <div class="about-grid">
+          <div class="about-main">
+            <div class="about-panel about-panel--dark">
+              <h2>Our Story</h2>
+              <p>We began as a neighborhood tea stall and have grown into a cozy spot serving handcrafted teas and light bites. Come enjoy seasonal blends and friendly service.</p>
+              <p><a class="btn primary" href="menu.html">See the Menu</a></p>
+            </div>
+            <div class="about-panel about-panel--dark about-section--hours" style="margin-top:18px">
+              <h3>Business Hours</h3>
+              <ul class="hours">
+                <li>Monday–Friday: <time>8:00 AM – 8:00 PM</time></li>
+                <li>Saturday: <time>9:00 AM – 9:00 PM</time></li>
+                <li>Sunday: <time>9:00 AM – 6:00 PM</time></li>
+              </ul>
+            </div>
+          </div>
+          <aside class="about-aside card about-aside--dark">
+            <h3>Team</h3>
+            <ul>
+              <li><strong>Owner:</strong> Dheeraj Heet Singh Bisht</li>
+              <li><strong>Head Barista:</strong> Aman Verma</li>
+              <li><strong>Pastry Chef:</strong> Leena Rao</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+  </body>
+</html>

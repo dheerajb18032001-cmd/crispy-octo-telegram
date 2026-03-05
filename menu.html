@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Menu — Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body class="menu" background-color="black">
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <nav class="nav">        python -m http.server 8000
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="order.html" class="cart">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+    <main class="menu-main">
+      <div class="container menu-inner">
+
+      <!-- Admin: create/show stored menu items -->
+      <div id="menu-admin" style="margin-bottom:18px">
+        <details>
+          <summary class="section-btn">Admin: Add Menu Item</summary>
+          <form id="add-item-form" style="display:grid;gap:8px;margin-top:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <input id="item-name" name="name" placeholder="Name" required style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)">
+              <input id="item-price" name="price" placeholder="Price (e.g. 3.50)" required style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)">
+            </div>
+            <input id="item-img" name="img" placeholder="Image URL" style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)">
+            <input id="item-section" name="section" placeholder="Section (milk-teas, fruit-teas, lattes, snacks, addons)" value="milk-teas" style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)">
+            <textarea id="item-desc" name="desc" placeholder="Short description" style="padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06)"></textarea>
+            <div style="display:flex;gap:8px">
+              <button class="btn" type="submit">Create</button>
+              <button id="clear-items" class="btn btn--danger" type="button">Clear Stored Items</button>
+            </div></header>
+          </form>
+        </details>
+      </div>
+
+      
+
+      <section id="milk-teas" class="menu-section milk-teas">
+        <div class="section-header">
+          <h2>Milk Teas</h2>
+          <a href="#milk-teas" class="section-btn section-btn--milk" aria-label="Toggle Milk Teas">
+            <span class="chev" aria-hidden="true">▾</span>
+            <span class="sr-only">Toggle Milk Teas</span>
+          </a>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-item" data-name="Classic Milk Tea" data-price="3.50">
+            <img class="menu-thumb" src="https://santokuknives.co.uk/cdn/shop/articles/Creamy-Classic-Milk-Tea-with-Chewy-Tapioca-Pearls-821661.jpg?v=1708179821" alt="Classic Milk Tea">
+            <div>
+              <h4>Classic Milk Tea</h4>
+              <p>Robust black tea balanced with creamy milk.</p>
+              <div class="menu-meta"><span class="price">$3.50</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Taro Milk Tea" data-price="4.00">
+            <img class="menu-thumb" src="https://www.alphafoodie.com/wp-content/uploads/2024/07/Taro-Milk-Tea-Main-1.jpeg" alt="Taro Milk Tea">
+            <div>
+              <h4>Taro Milk Tea</h4>
+              <p>Sweet, nutty taro blended with milk.</p>
+              <div class="menu-meta"><span class="price">$4.00</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Brown Sugar Milk Tea" data-price="4.50">
+            <img class="menu-thumb" src="https://www.foxyfolksy.com/wp-content/uploads/2020/06/brown-sugar-milk-tea.jpg" alt="Brown Sugar Milk Tea">
+            <div>
+              <h4>Brown Sugar Milk Tea</h4>
+              <p>Caramelized brown sugar syrup with milk tea.</p>
+              <div class="menu-meta"><span class="price">$4.50</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="fruit-teas" class="menu-section">
+        <div class="section-header">
+          <h2>Fruit Teas</h2>
+          <a href="#fruit-teas" class="section-btn section-btn--fruit" aria-label="Toggle Fruit Teas">
+            <span class="chev" aria-hidden="true">▾</span>
+            <span class="sr-only">Toggle Fruit Teas</span>
+          </a>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-item" data-name="Peach Black Tea" data-price="3.75">
+            <img class="menu-thumb" src="https://tse4.mm.bing.net/th/id/OIP.cJiuNnxjqoR2IM_c2ivh8AHaHa?w=740&h=740&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Peach Black Tea">
+            <div>
+              <h4>Peach Black Tea</h4>
+              <p>Black tea infused with peach syrup and fruit bits.</p>
+              <div class="menu-meta"><span class="price">$3.75</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Lychee Green Tea" data-price="3.75">
+            <img class="menu-thumb" src="https://tse1.mm.bing.net/th/id/OIP.tHh6MxgqSjFYJtJLiCe-OgHaH0?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Lychee Green Tea">
+            <div>
+              <h4>Lychee Green Tea</h4>
+              <p>Refreshing green tea with lychee flavor.</p>
+              <div class="menu-meta"><span class="price">$3.75</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Mango Passion" data-price="4.00">
+            <img class="menu-thumb" src="https://cdn.prod.website-files.com/65eac3a33d5111eb26d4870e/65f05723a04aa9ef2deae0f4_Mango%20Passionfruit%20Tea-p-800.png" alt="Mango Passion">
+            <div>
+              <h4>Mango Passion</h4>
+              <p>Mango and passionfruit with a hint of lime.</p>
+              <div class="menu-meta"><span class="price">$4.00</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="lattes" class="menu-section">
+        <div class="section-header">
+          <h2>Lattes & Specialties</h2>
+          <a href="#lattes" class="section-btn section-btn--lattes" aria-label="Toggle Lattes & Specialties">
+            <span class="chev" aria-hidden="true">▾</span>
+            <span class="sr-only">Toggle Lattes & Specialties</span>
+          </a>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-item" data-name="Matcha Latte" data-price="4.25">
+            <img class="menu-thumb" src="https://tse2.mm.bing.net/th/id/OIP.0PppyI55IU53WufKX4ZP-QHaHa?w=1080&h=1080&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Matcha Latte">
+            <div>
+              <h4>Matcha Latte</h4>
+              <p>Ceremonial-grade matcha whisked with steamed milk.</p>
+              <div class="menu-meta"><span class="price">$4.25</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Hojicha Latte" data-price="4.25">
+            <img class="menu-thumb" src="https://thumbs.dreamstime.com/b/hot-matcha-latte-hojicha-tea-latte-kurashiki-japan-hot-matcha-latte-hojicha-tea-latte-kurashiki-japan-374327428.jpg" alt="Hojicha Latte">
+            <div>
+              <h4>Hojicha Latte</h4>
+              <p>Roasted green tea with creamy milk.</p>
+              <div class="menu-meta"><span class="price">$4.25</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Rose Milk Tea" data-price="4.00">
+            <img class="menu-thumb" src="https://tse1.mm.bing.net/th/id/OIP.dcXJ52PcN2Z4-AmJfvEEZQHaJ4?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Rose Milk Tea">
+            <div>
+              <h4>Rose Milk Tea</h4>
+              <p>Floral rose notes combined with milk tea.</p>
+              <div class="menu-meta"><span class="price">$4.00</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="snacks" class="menu-section">
+        <div class="section-header">
+          <h2>Snacks</h2>
+          <a href="#snacks" class="section-btn section-btn--snacks" aria-label="Toggle Snacks">
+            <span class="chev" aria-hidden="true">▾</span>
+            <span class="sr-only">Toggle Snacks</span>
+          </a>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-item" data-name="Cheese Brownie" data-price="2.50">
+            <img class="menu-thumb" src="https://th.bing.com/th/id/OIP.MmVdYZTiu1h_muT_tJYaHgHaHa?w=200&h=200&c=7&r=0&o=7&pid=1.7&rm=3" alt="Cheese Brownie">
+            <div>
+              <h4>Cheese Brownie</h4>
+              <p>Rich brownie topped with cream cheese.</p>
+              <div class="menu-meta"><span class="price">$2.50</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Egg Tart" data-price="2.00">
+            <img class="menu-thumb" src="https://foohingdimsum.com.my/wp-content/uploads/2022/07/A38.-Portuguese-Egg-Tart.jpg" alt="Egg Tart">
+            <div>
+              <h4>Egg Tart</h4>
+              <p>Classic flaky pastry with smooth custard.</p>
+              <div class="menu-meta"><span class="price">$2.00</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="addons" class="menu-section">
+        <div class="section-header">
+          <h2>Add-ons</h2>
+          <a href="#addons" class="section-btn section-btn--addons" aria-label="Toggle Add-ons">
+            <span class="chev" aria-hidden="true">▾</span>
+            <span class="sr-only">Toggle Add-ons</span>
+          </a>
+        </div>
+        <div class="menu-grid">
+          <article class="menu-item" data-name="Boba (Tapioca)" data-price="0.75">
+            <img class="menu-thumb" src="https://www.chowhound.com/img/gallery/how-to-easily-make-tapioca-pearls-for-boba-tea/l-intro-1737331259.jpg" alt="Boba (Tapioca)">
+            <div>
+              <h4>Boba (Tapioca)</h4>
+              <p>Classic chewy tapioca pearls.</p>
+              <div class="menu-meta"><span class="price">$0.75</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+
+          <article class="menu-item" data-name="Popping Pearls" data-price="0.75">
+            <img class="menu-thumb" src="https://www.gosupps.com/media/catalog/product/cache/25/image/1500x/040ec09b1e35df139433887a97daa66f/7/1/71Rc27U_wmL._SL1500_.jpg" alt="Popping Pearls">
+            <div>
+              <h4>Popping Pearls</h4>
+              <p>Fruit juice spheres (mango, strawberry).</p>
+              <div class="menu-meta"><span class="price">$0.75</span><button class="btn btn--sm add-to-cart">Add</button></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/cart.js"></script>
+  </body>
+</html>
