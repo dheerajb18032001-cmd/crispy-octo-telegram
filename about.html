@@ -6,6 +6,26 @@
     <title>About — Tea Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
+    <style>
+      .about-hero{
+        background-size: cover;
+        background-position: center;
+        padding: 6rem 0;
+        color: #1a7ba8;
+        position: relative;
+      }
+      .about-hero::after{
+        content: "";
+        position: absolute;
+        left:0;right:0;top:0;bottom:0;
+        background: rgba(88, 179, 70, 0.35);
+      }
+      .about-hero .hero-inner{position:relative; z-index:1;}
+      .about-hero .hero-text{max-width:700px;}
+      .illustrations-row .illus{display:inline-block;vertical-align:middle}
+      .illustrations-row .illus.small{width:110px;height:auto}
+      .illustrations-row .illus.large{width:200px;height:auto}
+    </style>
   </head>
   <body class="about">
     <header class="site-header">
@@ -18,49 +38,42 @@
           <a href="gallery.html">Gallery</a>
           <a href="contact.html">Contact</a>
           <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
-        </nav>
-      </div>
-    </header>
-
-    <main class="container">
-      <section class="about-hero">
-        <div class="about-inner">
-          <div>
-            <h1>Our Story</h1>
-            <p class="about-lead">We began as a neighborhood tea stall and have grown into a cozy spot serving handcrafted teas and light bites. Come enjoy seasonal blends and friendly service.</p>
-            <p><a class="btn primary" href="menu.html">See the Menu</a></p>
-          </div>
-          <div>
-            <img class="about-hero-image" src="assets/photos/interior.svg" alt="Cozy interior of the shop">
-          </div>
         </div>
-      </section>
+        <div class="time-external-logo">
+            </div>
+        <div class="illustrations-row">
+          <img src="https://static.vecteezy.com/system/resources/previews/005/348/023/non_2x/tea-shop-logo-design-suitable-for-your-business-logo-free-vector.jpg" alt="tea shop logo left" class="illus small">
+          <img src="https://thumbs.dreamstime.com/z/tea-shop-logo-symbol-vector-illustration-design-template-183498051.jpg" alt="tea shop logo center" class="illus large">
+          <img src="https://png.pngtree.com/png-vector/20220424/ourmid/pngtree-vector-design-of-a-tea-cup-logo-with-template-for-green-tea-vector-logo-vector-png-image_36047326.jpg" alt="tea cup logo right" class="illus small">
+        </div>
+
+        <section class="about-hero" style="background-image: url('assets/photos/about.png');">
+          <div class="container hero-inner">
+            <div class="hero-text">
+              <h1 class="story-heading">Our Story</h1>
+              <b><p class="about-lead story-lead">We began as a neighborhood tea stall and have grown into a cozy spot serving handcrafted teas and light bites. Come enjoy seasonal blends and friendly service.</p>
+           </b> </div>
+          </div>
+        </section>
 
       <section class="container content about-content">
         <div class="about-grid">
           <div class="about-main">
-            <div class="about-panel about-panel--dark">
-              <h2>Our Story</h2>
-              <p>We began as a neighborhood tea stall and have grown into a cozy spot serving handcrafted teas and light bites. Come enjoy seasonal blends and friendly service.</p>
-              <p><a class="btn primary" href="menu.html">See the Menu</a></p>
-            </div>
-            <div class="about-panel about-panel--dark about-section--hours" style="margin-top:18px">
-              <h3>Business Hours</h3>
-              <ul class="hours">
-                <li>Monday–Friday: <time>8:00 AM – 8:00 PM</time></li>
+            <div class="about-panel about-panel--light time-block">
+              <h1 class="time-title">time :</h1>
+              <ul class="hours time-list">
+               <b> <li>Monday–Friday: <time>8:00 AM – 8:00 PM</time></li>
                 <li>Saturday: <time>9:00 AM – 9:00 PM</time></li>
                 <li>Sunday: <time>9:00 AM – 6:00 PM</time></li>
-              </ul>
+              </b></ul>
             </div>
           </div>
-          <aside class="about-aside card about-aside--dark">
-            <h3>Team</h3>
-            <ul>
-              <li><strong>Owner:</strong> Dheeraj Heet Singh Bisht</li>
-              <li><strong>Head Barista:</strong> Aman Verma</li>
-              <li><strong>Pastry Chef:</strong> Leena Rao</li>
-            </ul>
-          </aside>
+        </div>
+
+        <div class="illustrations-row">
+          <img src="https://static.vecteezy.com/system/resources/previews/022/559/910/large_2x/tea-logo-design-illustration-vector.jpg" alt="left teacup" class="illus small">
+          <img src="https://static.vecteezy.com/system/resources/previews/011/483/224/original/fresh-green-tea-logo-design-template-green-tea-cup-and-leafs-logo-design-free-vector.jpg" alt="center teacup" class="illus large">
+          <img src="https://img.freepik.com/premium-photo/green-tea-cup-saucer-logo-design_1107815-65515.jpg" alt="right teacup" class="illus small">
         </div>
       </section>
     </main>

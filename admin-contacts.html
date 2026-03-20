@@ -42,20 +42,24 @@
           const res = await fetch('/api/contacts');
           if(!res.ok) throw new Error('Network error');
           const data = await res.json();
-          if(!data || data.length === 0){ root.innerHTML = '<p>No contacts stored.</p>'; return; }
+              if(!data || data.length === 0){ root.innerHTML = '<p>No contacts stored.</p>'; return; }
+              // pastel row colors (cycles through contacts)
+              const rowColors = ['#FFF8E1', '#E8F5E9', '#E3F2FD', '#F3E5F5', '#FFEBEE'];
           const table = document.createElement('table');
           table.className = 'contacts-table';
           const thead = document.createElement('thead');
           thead.innerHTML = '<tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Received At</th></tr>';
           table.appendChild(thead);
           const tbody = document.createElement('tbody');
-          data.forEach(item => {
-            const tr = document.createElement('tr');
-            const id = item.id ?? '';
-            const recv = item.receivedAt ? (new Date(item.receivedAt)).toLocaleString() : '';
-            tr.innerHTML = `<td>${id}</td><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.message)}</td><td>${recv}</td>`;
-            tbody.appendChild(tr);
-          });
+              data.forEach((item, idx) => {
+                const tr = document.createElement('tr');
+                const id = item.id ?? '';
+                const recv = item.receivedAt ? (new Date(item.receivedAt)).toLocaleString() : '';
+                tr.innerHTML = `<td>${id}</td><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.email)}</td><td>${escapeHtml(item.message)}</td><td>${recv}</td>`;
+                // apply cycling background color for visual separation
+                tr.style.backgroundColor = rowColors[idx % rowColors.length];
+                tbody.appendChild(tr);
+              });
           table.appendChild(tbody);
           root.innerHTML = '';
           root.appendChild(table);
