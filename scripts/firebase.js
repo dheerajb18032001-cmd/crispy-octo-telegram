@@ -36,11 +36,55 @@
   }
 
   let loginDlg = null;
+  let dialogWired = false;
+
+  function wireDialogButtons(){
+    if (dialogWired) return;
+    dialogWired = true;
+    const bLogin = document.getElementById('fi-login');
+    const bReg = document.getElementById('fi-register');
+    const form = document.getElementById('fi-form');
+    if (form){
+      form.addEventListener('submit', (ev)=>{
+        ev.preventDefault();
+        const e = document.getElementById('fi-email').value;
+        const p = document.getElementById('fi-pass').value;
+        const action = (form.dataset.action || 'login').toLowerCase();
+        if (action === 'register'){
+          try{ document.getElementById('fi-pass').setAttribute('autocomplete','new-password'); }catch(x){}
+          register(e,p).finally(()=>{
+            form.dataset.action = 'login';
+            try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(x){}
+          });
+        } else {
+          try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(x){}
+          login(e,p);
+        }
+      });
+    }
+    if (bLogin) bLogin.onclick = ()=>{
+      if (form) form.dataset.action = 'login';
+      try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(x){}
+      if (form && typeof form.requestSubmit === 'function'){ form.requestSubmit(); return; }
+      const e = document.getElementById('fi-email').value;
+      const p = document.getElementById('fi-pass').value;
+      login(e,p);
+    };
+    if (bReg) bReg.onclick = ()=>{
+      if (form) form.dataset.action = 'register';
+      try{ document.getElementById('fi-pass').setAttribute('autocomplete','new-password'); }catch(x){}
+      if (form && typeof form.requestSubmit === 'function'){ form.requestSubmit(); return; }
+      const e = document.getElementById('fi-email').value;
+      const p = document.getElementById('fi-pass').value;
+      register(e,p);
+    };
+  }
 
   function openLogin(){
     if (!loginDlg) loginDlg = createLoginDialog();
     loginDlg.style.display = 'block';
     signInOpen = true;
+    wireDialogButtons();
   }
 
   function closeLogin(){
@@ -88,11 +132,21 @@
   }
 
   async function login(email, pass){
+    const errEl = document.getElementById('fi-error');
+    if (!email || !pass) {
+      if (errEl) { errEl.style.color = 'crimson'; errEl.textContent = 'Email and password are required.'; } else alert('Email and password are required.');
+      return;
+    }
     try{
       const user = await auth.signInWithEmailAndPassword(email, pass);
       console.log('Signed in', user);
-      closeLogin();
-    }catch(err){console.error(err);alert(err.message)}
+      if (errEl) { errEl.style.color = 'green'; errEl.textContent = 'Signed in!'; }
+      setTimeout(closeLogin, 600);
+    }catch(err){
+      console.error(err);
+      const msg = err && err.message ? err.message : 'Sign in failed';
+      if (errEl) { errEl.style.color = 'crimson'; errEl.textContent = msg; } else alert(msg);
+    }
   }
 
   function signout(){
@@ -123,57 +177,6 @@
   if (btnSignIn){
     btnSignIn.addEventListener('click', ()=>{
       if (!signInOpen) openLogin(); else closeLogin();
-      // wire dialog buttons lazily
-      setTimeout(()=>{
-        const bLogin = document.getElementById('fi-login');
-        const bReg = document.getElementById('fi-register');
-        const form = document.getElementById('fi-form');
-        if (form){
-          // default action is login so pressing Enter signs in
-          form.dataset.action = form.dataset.action || 'login';
-          form.addEventListener('submit', (ev)=>{
-            ev.preventDefault();
-            const e = document.getElementById('fi-email').value;
-            const p = document.getElementById('fi-pass').value;
-            const action = (form.dataset.action || 'login').toLowerCase();
-            if (action === 'register'){
-              // ensure password field hints as new password for password managers
-              try{ document.getElementById('fi-pass').setAttribute('autocomplete','new-password'); }catch(e){}
-              register(e,p).finally(()=>{
-                form.dataset.action = 'login';
-                try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(e){}
-              });
-            } else {
-              try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(e){}
-              login(e,p);
-            }
-          });
-        }
-        if (bLogin) bLogin.onclick = ()=>{
-          const formEl = document.getElementById('fi-form');
-          if (formEl) formEl.dataset.action = 'login';
-          try{ document.getElementById('fi-pass').setAttribute('autocomplete','current-password'); }catch(e){}
-          if (form && typeof form.requestSubmit === 'function'){
-            form.requestSubmit();
-            return;
-          }
-          const e = document.getElementById('fi-email').value;
-          const p = document.getElementById('fi-pass').value;
-          login(e,p);
-        }
-        if (bReg) bReg.onclick = ()=>{
-          const formEl = document.getElementById('fi-form');
-          if (formEl) formEl.dataset.action = 'register';
-          try{ document.getElementById('fi-pass').setAttribute('autocomplete','new-password'); }catch(e){}
-          if (form && typeof form.requestSubmit === 'function'){
-            form.requestSubmit();
-            return;
-          }
-          const e = document.getElementById('fi-email').value;
-          const p = document.getElementById('fi-pass').value;
-          register(e,p);
-        }
-      },100);
     });
   }
 
@@ -203,9 +206,11 @@
     }
   });
 
-  // expose firestore helpers for console/testing
+  // expose helpers globally
   window.TeaApp = {
-    addSampleDoc, readSampleDocs, authState: auth, db
+    addSampleDoc, readSampleDocs, authState: auth, db,
+    openLogin: openLogin,
+    closeLogin: closeLogin
   };
 
 })();

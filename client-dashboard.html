@@ -406,8 +406,13 @@
       // Sign-in prompt button
       var promptBtn = document.getElementById('signin-prompt-btn');
       if(promptBtn) promptBtn.addEventListener('click', function(){
-        var b = document.getElementById('btn-signin');
-        if(b) b.click();
+        // Try global openLogin first (from firebase.js), fallback to clicking signin buttons
+        if(window.TeaApp && typeof window.TeaApp.openLogin === 'function'){
+          window.TeaApp.openLogin();
+        } else {
+          var b = document.getElementById('btn-signin') || document.getElementById('btn-signin-2');
+          if(b) b.click();
+        }
       });
     })();
     </script>
