@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+  <style>
+ .nav{
+    background-color:rgb(183, 135, 222);} 
+      .hero{
+        background-color:rgb(183, 135, 222);} 
+           .home .site-header{
+             background-color:rgb(183, 135, 222);} 
+                .home .site-footer{
+        background-color:rgb(183, 135, 222);}  </style>
+  </head>
+  <body class="home" > 
+    <a href="assets/photos/hero.svg" class="welcome-badge" target="_blank" rel="noopener noreferrer">
+      <img src="assets/photos/hero.svg" alt="Welcome" />
+    </a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <nav class="nav">
+          <a href="index.html" target="sat yam">Home</a>
+          <a href="menu.html" target="sat yam">Menu</a>
+          <a href="about.html" target="sat yam">About</a>
+          <a href="gallery.html" target="sat yam">Gallery</a>
+          <a href="contact.html" target="satyam">Contact</a>
+          <a href="order.html" class="cart">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div style="max-width:780px;margin:0 auto;color:rgba(0, 0, 0, 0.8)">
+          <h1 style="background-color:rgb(206, 222, 135); color:rgb(255, 187, 0);" >Welcome to Tea Shop</h1>
+          <p style="background-color:rgb(156, 192, 116);">Handcrafted teas, cozy space, and friendly service.</p>
+          <p><a class="btn" href="menu.html">See the Menu</a></p>
+          <div class="yt-channel" style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+            <div class="g-ytsubscribe" data-channel="@TheLallantop" data-layout="default" data-theme="default" data-count="default"></div>
+            <a class="btn" href="https://www.youtube.com/@TheLallantop" target="_blank" rel="noopener">Visit our YouTube channel</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="features">
+        <article style="background-color:rgb(192, 116, 160);">
+          <h3>Fresh Ingredients</h3>
+          <p>----We use high-quality loose leaf teas and fresh milk.</p>
+        </article>
+        <article style="background-color:rgb(191, 192, 116);">
+          <h3>Cozy Atmosphere</h3>
+          <p>Relax in our comfortable seating and free Wi‑Fi.</p>
+        </article>
+        <article style="background-color:rgb(116, 192, 150);">
+          <h3>Local Favorites</h3>
+          <p>Seasonal blends and house specials every week.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop — replace with your business name</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+  </body>
+</html>

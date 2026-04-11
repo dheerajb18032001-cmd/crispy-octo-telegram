@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Admin — Contacts | Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+      .admin-wrap { padding: 32px 0 48px; }
+
+      .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .admin-header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+        position: relative;
+        padding-bottom: 6px;
+      }
+      .admin-header h1::after {
+        content: "";
+        display: block;
+        height: 4px;
+        width: 80px;
+        margin-top: 8px;
+        border-radius: 4px;
+        background: var(--accent);
+      }
+
+      .admin-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .contact-count {
+        font-size: 0.9rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      /* Search / filter */
+      .search-bar {
+        padding: 8px 14px;
+        border: 1px solid rgba(0,0,0,0.08);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        width: 220px;
+        background: var(--panel);
+        color: var(--text);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+      .search-bar:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(43,138,74,0.12);
+      }
+
+      /* Table */
+      .contacts-table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        background: var(--panel);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        border: 1px solid rgba(0,0,0,0.04);
+      }
+
+      .contacts-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+      }
+      .contacts-table th {
+        padding: 12px 14px;
+        text-align: left;
+        font-weight: 700;
+        color: var(--muted);
+        background: rgba(0,0,0,0.02);
+        border-bottom: 2px solid rgba(0,0,0,0.06);
+        white-space: nowrap;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .contacts-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        vertical-align: top;
+      }
+      .contacts-table tbody tr {
+        transition: background 0.12s ease;
+      }
+      .contacts-table tbody tr:hover {
+        background: rgba(43,138,74,0.04);
+      }
+
+      .contacts-table td.msg-cell {
+        max-width: 320px;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .contacts-table td.email-cell a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .contacts-table td.email-cell a:hover {
+        text-decoration: underline;
+      }
+
+      .date-cell {
+        white-space: nowrap;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .id-cell {
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      /* Empty / loading / error states */
+      .state-msg {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+      .state-msg.error {
+        color: var(--danger);
+      }
+      .state-msg .state-icon {
+        display: block;
+        font-size: 2.4rem;
+        margin-bottom: 12px;
+      }
+
+      @media (max-width: 640px) {
+        .admin-header { flex-direction: column; align-items: flex-start; }
+        .search-bar { width: 100%; }
+        .contacts-table th, .contacts-table td { padding: 10px 10px; font-size: 0.88rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Tea Shop home">Tea Shop</a>
+        <nav class="nav" role="navigation" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="client-dashboard.html">Client Dashboard</a>
+          <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container admin-wrap">
+      <div class="admin-header">
+        <div>
+          <h1>Stored Contacts</h1>
+          <span class="contact-count" id="contact-count"></span>
+        </div>
+        <div class="admin-controls">
+          <input type="text" id="search-input" class="search-bar" placeholder="Search contacts…" aria-label="Search contacts">
+          <button id="refresh-btn" class="btn btn--sm" aria-label="Refresh contacts">&#x21bb; Refresh</button>
+        </div>
+      </div>
+      <div id="contacts-root">
+        <div class="state-msg"><span class="state-icon">&#9203;</span>Loading contacts…</div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop</p>
+      </div>
+    </footer>
+
+    <script>
+      let allContacts = [];
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        return String(s).replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+      }
+
+      function renderTable(data) {
+        const root = document.getElementById('contacts-root');
+        const countEl = document.getElementById('contact-count');
+
+        if (!data || data.length === 0) {
+          countEl.textContent = '';
+          root.innerHTML = '<div class="state-msg"><span class="state-icon">📭</span>No contacts found.</div>';
+          return;
+        }
+
+        countEl.textContent = data.length + ' contact' + (data.length !== 1 ? 's' : '');
+
+        const rowColors = ['#FFF8E1', '#E8F5E9', '#E3F2FD', '#F3E5F5', '#FFEBEE'];
+
+        let html = '<div class="contacts-table-wrap"><table class="contacts-table">';
+        html += '<thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Received</th></tr></thead>';
+        html += '<tbody>';
+
+        data.forEach((item, idx) => {
+          const id = item.id ?? '';
+          const recv = item.receivedAt ? new Date(item.receivedAt).toLocaleString() : '';
+          const bg = rowColors[idx % rowColors.length];
+          html += '<tr style="background-color:' + bg + '">';
+          html += '<td class="id-cell">' + escapeHtml(String(id)) + '</td>';
+          html += '<td>' + escapeHtml(item.name) + '</td>';
+          html += '<td class="email-cell"><a href="mailto:' + encodeURIComponent(item.email) + '">' + escapeHtml(item.email) + '</a></td>';
+          html += '<td class="msg-cell">' + escapeHtml(item.message) + '</td>';
+          html += '<td class="date-cell">' + escapeHtml(recv) + '</td>';
+          html += '</tr>';
+        });
+
+        html += '</tbody></table></div>';
+        root.innerHTML = html;
+      }
+
+      async function loadContacts() {
+        const root = document.getElementById('contacts-root');
+        root.innerHTML = '<div class="state-msg"><span class="state-icon">&#9203;</span>Loading contacts…</div>';
+
+        try {
+          const res = await fetch('/api/contacts');
+          if (!res.ok) throw new Error('Network error (' + res.status + ')');
+          allContacts = await res.json();
+          filterAndRender();
+        } catch (err) {
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">&#9888;</span>Error loading contacts.<br><small>' + escapeHtml(err.message) + '</small></div>';
+          console.error(err);
+        }
+      }
+
+      function filterAndRender() {
+        const query = (document.getElementById('search-input').value || '').trim().toLowerCase();
+        if (!query) {
+          renderTable(allContacts);
+          return;
+        }
+        const filtered = allContacts.filter(c =>
+          (c.name || '').toLowerCase().includes(query) ||
+          (c.email || '').toLowerCase().includes(query) ||
+          (c.message || '').toLowerCase().includes(query)
+        );
+        renderTable(filtered);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('refresh-btn').addEventListener('click', loadContacts);
+        document.getElementById('search-input').addEventListener('input', filterAndRender);
+        loadContacts();
+      });
+    </script>
+  </body>
+</html>

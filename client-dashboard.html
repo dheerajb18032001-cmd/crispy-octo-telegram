@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Client Dashboard — Tea Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+      .dash-container{max-width:680px;margin:0 auto;padding:24px 18px 48px}
+
+      /* Header row */
+      .dash-title-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+      .dash-title-row h1{font-size:1.8rem;margin:0;font-style:italic;color:var(--text)}
+      .dash-auth{display:flex;align-items:center;gap:10px;font-size:0.92rem}
+      .dash-auth .user-name{color:var(--accent);font-weight:600}
+      .dash-auth a,.dash-auth button{color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;font-size:0.92rem;font-family:inherit;padding:0}
+      .dash-auth a:hover,.dash-auth button:hover{color:var(--text)}
+
+      /* Section card */
+      .dash-card{background:var(--panel);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:20px;margin-bottom:20px;box-shadow:0 4px 14px rgba(0,0,0,0.04)}
+      .dash-card h2{font-size:1.15rem;font-weight:700;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,0.06);color:var(--text)}
+
+      /* Your Info form */
+      .info-grid{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px 10px;align-items:center}
+      .info-grid label{font-weight:600;color:var(--muted);font-size:0.92rem;white-space:nowrap}
+      .info-grid input,.info-grid textarea{padding:7px 10px;border:1px solid rgba(0,0,0,0.10);border-radius:6px;font-family:inherit;font-size:0.95rem;background:var(--bg);color:var(--text)}
+      .info-grid input:focus,.info-grid textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(43,138,74,0.12)}
+      .info-full{grid-column:1/-1}
+      .info-grid textarea{min-height:52px;resize:vertical}
+      .info-actions{margin-top:10px}
+
+      /* Your Cart */
+      .dash-cart-wrap{position:relative;overflow:hidden;border-radius:8px;background-image:url('https://i.pinimg.com/originals/6d/dc/69/6ddc697a2ed336c2eb984fc0e42c0436.jpg');background-size:cover;background-position:center;padding:16px;color:#fff}
+      .dash-cart-wrap::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,0.38),rgba(0,0,0,0.48));pointer-events:none}
+      .dash-cart-wrap>*{position:relative;z-index:1}
+      .dash-cart-table{width:100%;border-collapse:collapse}
+      .dash-cart-table th{text-align:left;padding:8px 10px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15);font-size:0.9rem}
+      .dash-cart-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.08)}
+      .dash-cart-total{text-align:right;padding:10px 0;font-size:1.05rem;font-weight:700}
+      .dash-cart-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+      .dash-cart-empty{text-align:center;padding:28px;color:rgba(255,255,255,0.8)}
+
+      /* Recent Orders */
+      .orders-ul{list-style:disc;padding-left:20px;margin:0}
+      .orders-ul li{margin-bottom:12px;color:var(--text)}
+      .orders-ul .order-header{font-weight:600;font-size:0.95rem}
+      .orders-ul .order-header .order-user{color:var(--muted)}
+      .orders-ul .order-header .order-total{color:var(--muted)}
+      .orders-ul .order-info-link{color:var(--accent);cursor:pointer;text-decoration:none;font-size:0.88rem;font-weight:600}
+      .orders-ul .order-info-link:hover{text-decoration:underline}
+      .orders-ul .order-items-detail{font-size:0.85rem;color:var(--accent);margin-top:2px}
+      .order-bullet{color:var(--accent)}
+
+      /* Sign in prompt */
+      .signin-prompt{text-align:center;padding:48px 24px}
+      .signin-prompt h2{margin-bottom:8px}
+      .signin-prompt p{color:var(--muted);margin-bottom:18px}
+
+      @media (max-width:600px){
+        .info-grid{grid-template-columns:auto 1fr;gap:6px 8px}
+        .dash-title-row{flex-direction:column}
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+        <div id="auth-ui" style="margin-right:12px;">
+          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
+        </div>
+        <nav class="nav">
+          <a href="index.html">Home</a>
+          <a href="menu.html">Menu</a>
+          <a href="about.html">About</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="contact.html">Contact</a>
+          <a href="client-dashboard.html" aria-current="page">Client Dashboard</a>
+          <a href="order.html" class="cart">Order (<span id="cart-count">0</span>)</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="dash-container">
+      <!-- Title row with auth -->
+      <div class="dash-title-row">
+        <h1>Client Dashboard</h1>
+        <div class="dash-auth" id="dash-auth">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- Sign In prompt (shown when not logged in) -->
+      <div id="signin-prompt" class="signin-prompt" style="display:none">
+        <h2>Sign In to View Your Dashboard</h2>
+        <p>Please sign in to see your profile, cart, and order history.</p>
+        <button class="btn btn--success" id="signin-prompt-btn">Sign In Now</button>
+      </div>
+
+      <!-- ===== Your Info ===== -->
+      <div class="dash-card" id="info-section" style="display:none">
+        <h2>Your Info</h2>
+        <form id="info-form" autocomplete="on">
+          <div class="info-grid">
+            <label for="info-name">Name:</label>
+            <input id="info-name" name="name" type="text" placeholder="Optional name" autocomplete="name">
+            <label for="info-email">Email:</label>
+            <input id="info-email" name="email" type="email" placeholder="Optional email" autocomplete="email">
+            <label for="info-phone">Phone:</label>
+            <input id="info-phone" name="phone" type="tel" placeholder="Mobile number" autocomplete="tel">
+          </div>
+          <div style="margin-top:8px">
+            <label for="info-address" style="font-weight:600;color:var(--muted);font-size:0.92rem">Address (optional)</label>
+            <textarea id="info-address" name="address" placeholder="Address (optional)" autocomplete="street-address" style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid rgba(0,0,0,0.10);border-radius:6px;font-family:inherit;font-size:0.95rem;background:var(--bg);color:var(--text);min-height:52px;resize:vertical"></textarea>
+          </div>
+          <div class="info-actions">
+            <button type="submit" class="btn btn--sm">Save Info</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ===== Your Cart ===== -->
+      <div class="dash-card" id="cart-section" style="display:none">
+        <h2>Your Cart</h2>
+        <div class="dash-cart-wrap">
+          <div id="dash-cart-body">
+            <div class="dash-cart-empty">Your cart is empty. <a href="menu.html" style="color:#fff;text-decoration:underline">Browse the menu</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Recent Orders ===== -->
+      <div class="dash-card" id="orders-section" style="display:none">
+        <h2>Recent Orders</h2>
+        <div id="orders-body">
+          <p style="color:var(--muted);text-align:center;padding:18px">Loading orders…</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop — Your Favorite Beverage Destination</p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDPHOcGwRxir9fMu4o4trpajK8p5a1s-C8",
+        authDomain: "teashop-71af9.firebaseapp.com",
+        projectId: "teashop-71af9",
+        storageBucket: "teashop-71af9.firebasestorage.app",
+        messagingSenderId: "480830622073",
+        appId: "1:480830622073:web:13316536f8575a6fbd47a8",
+        measurementId: "G-KCDVEW77SW"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="scripts/firebase.js"></script>
+
+    <script>
+    (function(){
+      var auth = firebase.auth();
+      var db = firebase.firestore();
+      var CART_KEY = 'cart';
+      var CURRENCY = '₹';
+
+      function escapeHtml(s){ if(!s)return''; return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);}); }
+
+      // ---- Cart helpers ----
+      function getCart(){
+        try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch(e){ return {}; }
+      }
+      function saveCart(cart){
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        var el = document.getElementById('cart-count');
+        var n=0; Object.values(cart).forEach(function(i){n+=(i.qty||0);}); if(el) el.textContent=n;
+        renderDashCart();
+      }
+
+      // ---- Render cart in dashboard ----
+      function renderDashCart(){
+        var body = document.getElementById('dash-cart-body');
+        if(!body) return;
+        var cart = getCart();
+        var items = Object.values(cart);
+        if(items.length === 0){
+          body.innerHTML = '<div class="dash-cart-empty">Your cart is empty. <a href="menu.html" style="color:#fff;text-decoration:underline">Browse the menu</a></div>';
+          return;
+        }
+        var total = 0;
+        var html = '<table class="dash-cart-table"><thead><tr><th>Item</th><th>Qty</th><th>Line</th></tr></thead><tbody>';
+        items.forEach(function(it){
+          var line = (it.price||0) * (it.qty||0);
+          total += line;
+          html += '<tr><td>' + escapeHtml(it.name) + '</td><td style="text-align:center">' + it.qty + '</td><td>' + CURRENCY + line.toFixed(0) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        html += '<div class="dash-cart-total">Total: $' + total.toFixed(0) + '</div>';
+        html += '<div class="dash-cart-actions">';
+        html += '<button class="btn btn--sm btn--success" id="dash-place-order">Place Order</button>';
+        html += '<button class="btn btn--sm btn--outline" style="color:#fff;border-color:rgba(255,255,255,0.3)" id="dash-clear-cart">Clear Cart</button>';
+        html += '</div>';
+        body.innerHTML = html;
+
+        document.getElementById('dash-clear-cart').addEventListener('click', function(){
+          localStorage.removeItem(CART_KEY);
+          var el = document.getElementById('cart-count'); if(el) el.textContent='0';
+          renderDashCart();
+        });
+
+        document.getElementById('dash-place-order').addEventListener('click', function(){
+          var user = auth.currentUser;
+          if(!user){ alert('Please sign in first.'); return; }
+          placeOrder(user);
+        });
+      }
+
+      // ---- Place Order ----
+      function placeOrder(user){
+        var cart = getCart();
+        var items = {};
+        var total = 0;
+        Object.values(cart).forEach(function(it){
+          items[it.name] = (it.qty||0);
+          total += (it.price||0) * (it.qty||0);
+        });
+        if(Object.keys(items).length === 0){ alert('Cart is empty.'); return; }
+
+        // Build detail strings
+        var detailParts = [];
+        Object.values(cart).forEach(function(it){
+          detailParts.push(it.name + ' x' + it.qty);
+        });
+
+        // Read user info from the form
+        var infoName = (document.getElementById('info-name').value || '').trim();
+        var infoEmail = (document.getElementById('info-email').value || '').trim();
+        var infoPhone = (document.getElementById('info-phone').value || '').trim();
+        var infoAddress = (document.getElementById('info-address').value || '').trim();
+
+        db.collection('orders').add({
+          userId: user.uid,
+          name: infoName || user.displayName || user.email || 'User',
+          email: infoEmail || user.email || '',
+          phone: infoPhone || '',
+          address: infoAddress || '',
+          items: items,
+          itemsDetail: detailParts.join(', '),
+          total: total,
+          status: 'pending',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){
+          alert('Order placed — thank you!');
+          localStorage.removeItem(CART_KEY);
+          var el = document.getElementById('cart-count'); if(el) el.textContent='0';
+          renderDashCart();
+          loadOrders(user);
+        }).catch(function(err){
+          console.error(err);
+          alert('Failed to place order: ' + err.message);
+        });
+      }
+
+      // ---- Save Info ----
+      function initInfoForm(user){
+        var form = document.getElementById('info-form');
+        if(!form) return;
+
+        // Pre-fill from Firestore users collection
+        db.collection('users').doc(user.uid).get().then(function(doc){
+          if(doc.exists){
+            var d = doc.data();
+            document.getElementById('info-name').value = d.name || user.displayName || '';
+            document.getElementById('info-email').value = d.email || user.email || '';
+            document.getElementById('info-phone').value = d.phone || '';
+            document.getElementById('info-address').value = d.address || '';
+          } else {
+            document.getElementById('info-name').value = user.displayName || '';
+            document.getElementById('info-email').value = user.email || '';
+          }
+        }).catch(function(e){ console.error(e); });
+
+        form.addEventListener('submit', function(e){
+          e.preventDefault();
+          var data = {
+            name: document.getElementById('info-name').value.trim(),
+            email: document.getElementById('info-email').value.trim(),
+            phone: document.getElementById('info-phone').value.trim(),
+            address: document.getElementById('info-address').value.trim(),
+            uid: user.uid,
+            status: 'info',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          db.collection('users').doc(user.uid).set(data, {merge:true}).then(function(){
+            alert('Info saved!');
+          }).catch(function(err){
+            console.error(err);
+            alert('Failed to save: ' + err.message);
+          });
+        });
+      }
+
+      // ---- Load Recent Orders ----
+      function loadOrders(user){
+        var body = document.getElementById('orders-body');
+        if(!body) return;
+
+        db.collection('orders')
+          .where('userId', '==', user.uid)
+          .orderBy('createdAt', 'desc')
+          .limit(15)
+          .get()
+          .then(function(snap){
+            if(snap.empty){
+              body.innerHTML = '<p style="color:var(--muted);text-align:center;padding:18px">No orders yet. <a href="menu.html">Start ordering!</a></p>';
+              return;
+            }
+            var html = '<ul class="orders-ul">';
+            snap.docs.forEach(function(doc){
+              var o = doc.data();
+              // Support both createdAt and timestamp fields
+              var tsField = o.createdAt || o.timestamp;
+              var ts = tsField && tsField.toDate ? tsField.toDate() : new Date();
+              var dateStr = ts.toLocaleDateString('en-IN',{day:'numeric',month:'numeric',year:'numeric'})
+                + ', ' + ts.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+              var userName = escapeHtml(o.name || o.userName || 'User');
+              var totalStr = o.total ? (CURRENCY + Number(o.total).toLocaleString('en-IN')) : '';
+
+              html += '<li>';
+              html += '<span class="order-header">' + dateStr + ' — ' + '<span class="order-user">' + userName + '</span>';
+              if(totalStr) html += ' — <span class="order-total">' + totalStr + '</span>';
+              html += ' <a class="order-info-link" data-id="' + doc.id + '">(info)</a>';
+              html += '</span>';
+
+              // Build detail from items map or itemsDetail string
+              var detail = o.itemsDetail || '';
+              if(!detail && o.items && typeof o.items === 'object'){
+                var parts = [];
+                Object.keys(o.items).forEach(function(k){
+                  parts.push(k + ' x' + o.items[k]);
+                });
+                detail = parts.join(', ');
+              }
+              if(detail){
+                html += '<div class="order-items-detail" style="display:none" data-detail-id="' + doc.id + '">' + escapeHtml(detail) + '</div>';
+              }
+              html += '</li>';
+            });
+            html += '</ul>';
+            body.innerHTML = html;
+
+            // Toggle detail on (info) click
+            body.querySelectorAll('.order-info-link').forEach(function(link){
+              link.addEventListener('click', function(e){
+                e.preventDefault();
+                var id = link.dataset.id;
+                var det = body.querySelector('[data-detail-id="' + id + '"]');
+                if(det) det.style.display = det.style.display === 'none' ? 'block' : 'none';
+              });
+            });
+          })
+          .catch(function(err){
+            console.error('Error loading orders:', err);
+            body.innerHTML = '<p style="color:var(--danger);text-align:center;padding:18px">Error loading orders.</p>';
+          });
+      }
+
+      // ---- Auth state ----
+      function showDashboard(user){
+        document.getElementById('signin-prompt').style.display = 'none';
+        document.getElementById('info-section').style.display = '';
+        document.getElementById('cart-section').style.display = '';
+        document.getElementById('orders-section').style.display = '';
+
+        // Auth header
+        var dashAuth = document.getElementById('dash-auth');
+        dashAuth.innerHTML = '<span class="user-name">' + escapeHtml(user.displayName || user.email || 'User') + '</span><button id="dash-signout">Sign Out</button>';
+        document.getElementById('dash-signout').addEventListener('click', function(){ auth.signOut(); });
+
+        initInfoForm(user);
+        renderDashCart();
+        loadOrders(user);
+      }
+
+      function hideDashboard(){
+        document.getElementById('signin-prompt').style.display = '';
+        document.getElementById('info-section').style.display = 'none';
+        document.getElementById('cart-section').style.display = 'none';
+        document.getElementById('orders-section').style.display = 'none';
+        var dashAuth = document.getElementById('dash-auth');
+        dashAuth.innerHTML = '';
+      }
+
+      auth.onAuthStateChanged(function(user){
+        if(user) showDashboard(user);
+        else hideDashboard();
+      });
+
+      // Sign-in prompt button
+      var promptBtn = document.getElementById('signin-prompt-btn');
+      if(promptBtn) promptBtn.addEventListener('click', function(){
+        var b = document.getElementById('btn-signin');
+        if(b) b.click();
+      });
+    })();
+    </script>
+  </body>
+</html>
