@@ -11,6 +11,15 @@ const port = process.env.PORT || 3000;
 // Parse JSON bodies
 app.use(express.json());
 
+// CORS: Allow requests from any origin (for cross-domain calls)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 // Serve the site root (one level up from server/)
 app.use(express.static(path.join(__dirname, '..')));
 
@@ -84,6 +93,17 @@ async function initDb() {
 
 // Initialize DB (non-blocking startup)
 initDb().catch(err => console.error('DB init error', err));
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    server: 'running',
+    time: new Date().toISOString(),
+    dbConnected: dbClient && dbType ? true : false,
+    dbType: dbType || 'file'
+  });
+});
 
 // Contact API: try DB insert, fallback to file storage
 app.post('/api/contact', async (req, res) => {

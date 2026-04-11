@@ -33,6 +33,18 @@
 
   // ---- Menu page: convert Add buttons to +/- controls ----
   function initMenuControls(){
+    // Patch existing cart entries: add missing images from current menu DOM
+    var cart = getCart();
+    var patched = false;
+    document.querySelectorAll('.menu-item').forEach(function(item){
+      var n = item.dataset.name;
+      if(cart[n] && !cart[n].img){
+        var imgEl = item.querySelector('.menu-thumb');
+        if(imgEl && imgEl.src){ cart[n].img = imgEl.src; patched = true; }
+      }
+    });
+    if(patched) saveCart(cart);
+
     document.querySelectorAll('.menu-item').forEach(item => {
       const name = item.dataset.name;
       const price = Number(item.dataset.price) || 0;
@@ -181,8 +193,8 @@
     items.forEach(it => {
       const line = (it.price * it.qty).toFixed(2);
       const imgTag = it.img
-        ? '<img class="drawer-item-img" src="' + escapeAttr(it.img) + '" alt="">'
-        : '<div class="drawer-item-img" style="background:rgba(0,0,0,0.06)"></div>';
+        ? '<img class="drawer-item-img" src="' + escapeAttr(it.img) + '" alt="" onerror="this.outerHTML=\'<div class=drawer-item-img style=background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:1.3rem>&#x1f375;</div>\'">'
+        : '<div class="drawer-item-img" style="background:rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;font-size:1.3rem">&#x1f375;</div>';
       html += '<div class="drawer-item" data-drawer-name="' + escapeAttr(it.name) + '">';
       html += imgTag;
       html += '<div class="drawer-item-info">';

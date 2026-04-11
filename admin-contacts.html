@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin — Contacts | Tea Shop</title>
+    <title>Admin Panel | Tea Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
     <style>
+      body { background: var(--bg); }
       .admin-wrap { padding: 32px 0 48px; }
 
       .admin-header {
@@ -37,13 +38,52 @@
         display: flex;
         gap: 10px;
         align-items: center;
+        flex-wrap: wrap;
       }
 
-      .contact-count {
-        font-size: 0.9rem;
-        color: var(--muted);
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
         font-weight: 600;
       }
+      .status-badge.online { background: rgba(43,138,74,0.15); color: var(--accent); }
+      .status-badge.offline { background: rgba(220,38,38,0.15); color: #dc2626; }
+      .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+      .online .status-dot { background: var(--accent); animation: pulse 2s infinite; }
+      .offline .status-dot { background: #dc2626; }
+
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+      .tabs {
+        display: flex;
+        gap: 0;
+        margin: 24px 0 20px;
+        border-bottom: 2px solid rgba(0,0,0,0.06);
+      }
+      .tab-btn {
+        padding: 12px 16px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--muted);
+        transition: all 0.2s ease;
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab-btn:hover {
+        color: var(--text);
+      }
+
+      .tab-content { display: none; }
+      .tab-content.active { display: block; }
 
       /* Search / filter */
       .search-bar {
@@ -64,7 +104,7 @@
       }
 
       /* Table */
-      .contacts-table-wrap {
+      .table-wrap {
         overflow-x: auto;
         border-radius: 12px;
         background: var(--panel);
@@ -72,12 +112,12 @@
         border: 1px solid rgba(0,0,0,0.04);
       }
 
-      .contacts-table {
+      table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.95rem;
       }
-      .contacts-table th {
+      th {
         padding: 12px 14px;
         text-align: left;
         font-weight: 700;
@@ -89,15 +129,351 @@
         text-transform: uppercase;
         letter-spacing: 0.04em;
       }
-      .contacts-table td {
+      td {
         padding: 12px 14px;
         border-bottom: 1px solid rgba(0,0,0,0.04);
         vertical-align: top;
       }
-      .contacts-table tbody tr {
+      tbody tr {
         transition: background 0.12s ease;
       }
-      .contacts-table tbody tr:hover {
+      tbody tr:nth-child(odd) { background: rgba(0,0,0,0.015); }
+      tbody tr:hover { background: rgba(43,138,74,0.08); }
+
+      .state-msg {
+        padding: 40px 20px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+      .state-msg.error {
+        color: #dc2626;
+      }
+      .state-icon {
+        display: block;
+        font-size: 2.4rem;
+        margin-bottom: 12px;
+      }
+
+      .console-panel {
+        background: #1e1e1e;
+        color: #00ff00;
+        padding: 16px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 16px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .console-panel .log { display: block; margin-bottom: 4px; }
+      .console-panel .error { color: #ff6b6b; }
+      .console-panel .success { color: #51cf66; }
+
+      .info-card {
+        background: var(--panel);
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        border-left: 4px solid var(--accent);
+      }
+
+      small { color: var(--muted); display: block; margin-top: 4px; }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="logo"><a href="index.html" style="text-decoration:none;color:inherit;">☕ Tea Shop</a></div>
+        <nav class="nav-menu" id="auth-ui"></nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="container admin-wrap">
+        <div class="admin-header">
+          <h1>Admin Dashboard</h1>
+          <div class="admin-controls">
+            <span class="status-badge" id="status-badge">
+              <span class="status-dot"></span>
+              <span id="status-text">Checking…</span>
+            </span>
+            <button class="btn btn--sm" id="refresh-btn">🔄 Refresh</button>
+            <button class="btn btn--sm" id="test-btn">🧪 Test Backend</button>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <strong>Backend Status:</strong><br>
+          <small id="backend-info">Initializing…</small>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="contacts">📧 Contact Forms</button>
+          <button class="tab-btn" data-tab="orders">📦 Orders (Firebase)</button>
+          <button class="tab-btn" data-tab="console">🖥️ Console</button>
+        </div>
+
+        <!-- Contacts Tab -->
+        <div class="tab-content active" id="contacts">
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <input class="search-bar" id="search-input" placeholder="Search by name, email...">
+            <span class="contact-count">Total: <span id="contact-count">0</span></span>
+          </div>
+          <div id="contacts-root" class="table-wrap"></div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div class="tab-content" id="orders">
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <input class="search-bar" id="orders-search" placeholder="Search by name, email...">
+            <span class="contact-count">Total: <span id="orders-count">0</span></span>
+          </div>
+          <div id="orders-root" class="table-wrap"></div>
+        </div>
+
+        <!-- Console Tab -->
+        <div class="tab-content" id="console">
+          <div class="console-panel" id="console-panel">Console logs will appear here…</div>
+          <button class="btn btn--sm" id="clear-console" style="margin-top:12px">Clear Console</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; Tea Shop Admin</p>
+      </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDPHOcGwRxir9fMu4o4trpajK8p5a1s-C8",
+        authDomain: "teashop-71af9.firebaseapp.com",
+        projectId: "teashop-71af9",
+        storageBucket: "teashop-71af9.firebasestorage.app",
+        messagingSenderId: "480830622073",
+        appId: "1:480830622073:web:13316536f8575a6fbd47a8",
+        measurementId: "G-KCDVEW77SW"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="scripts/firebase.js"></script>
+
+    <script>
+    (function(){
+      let allContacts = [];
+      let allOrders = [];
+      const consoleLogs = [];
+
+      const CURRENCY = '₹';
+
+      // Console logging helper
+      function logToConsole(msg, type = 'log') {
+        const timestamp = new Date().toLocaleTimeString();
+        const line = `[${timestamp}] ${msg}`;
+        consoleLogs.push({ msg: line, type });
+        const panel = document.getElementById('console-panel');
+        if (panel) {
+          const pre = document.createElement('div');
+          pre.className = `log ${type}`;
+          pre.textContent = line;
+          panel.appendChild(pre);
+          panel.scrollTop = panel.scrollHeight;
+        }
+      }
+
+      // Escape HTML
+      function escapeHtml(s){ if(!s)return''; return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);}); }
+
+      // Test backend connectivity
+      async function testBackend() {
+        logToConsole('Testing backend connectivity...', 'log');
+        try {
+          const res = await fetch('/api/health');
+          if (res.ok) {
+            const data = await res.json();
+            logToConsole(`✓ Backend is online. Database: ${data.dbType || 'unknown'}`, 'success');
+            updateStatusBadge('online', `Backend Online (${data.dbType})`);
+            updateBackendInfo(`✓ Server: ${data.status} | DB: ${data.dbType} | Time: ${new Date(data.time).toLocaleTimeString()}`);
+          } else {
+            logToConsole(`✗ Backend returned error: ${res.status}`, 'error');
+            updateStatusBadge('offline', `Error ${res.status}`);
+          }
+        } catch (err) {
+          logToConsole(`✗ Backend is unreachable: ${err.message}`, 'error');
+          updateStatusBadge('offline', 'Backend Offline');
+          updateBackendInfo(`⛔ Cannot reach backend. Make sure Express server is running. Error: ${err.message}`);
+        }
+      }
+
+      function updateStatusBadge(status, text) {
+        const badge = document.getElementById('status-badge');
+        if (badge) {
+          badge.className = `status-badge ${status}`;
+          badge.innerHTML = `<span class="status-dot"></span><span id="status-text">${text}</span>`;
+        }
+      }
+
+      function updateBackendInfo(msg) {
+        const info = document.getElementById('backend-info');
+        if (info) info.textContent = msg;
+      }
+
+      // Load contacts from backend
+      async function loadContacts() {
+        const root = document.getElementById('contacts-root');
+        root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading contacts…</div>';
+        logToConsole('Fetching contacts from backend...', 'log');
+
+        try {
+          const res = await fetch('/api/contacts');
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          allContacts = await res.json();
+          logToConsole(`✓ Loaded ${allContacts.length} contacts`, 'success');
+          filterAndRenderContacts();
+          updateBackendInfo(`✓ Backend connected. Last updated: ${new Date().toLocaleTimeString()}`);
+          updateStatusBadge('online', 'Backend Online');
+        } catch (err) {
+          logToConsole(`✗ Failed to load contacts: ${err.message}`, 'error');
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Backend may be offline. See console for details.</small></div>';
+          updateBackendInfo(`❌ Failed to fetch contacts: ${err.message}`);
+          updateStatusBadge('offline', 'Backend Error');
+        }
+      }
+
+      function filterAndRenderContacts() {
+        const query = (document.getElementById('search-input').value || '').trim().toLowerCase();
+        const filtered = !query ? allContacts : allContacts.filter(c =>
+          (c.name || '').toLowerCase().includes(query) ||
+          (c.email || '').toLowerCase().includes(query) ||
+          (c.message || '').toLowerCase().includes(query)
+        );
+        renderContactsTable(filtered);
+      }
+
+      function renderContactsTable(items) {
+        const root = document.getElementById('contacts-root');
+        document.getElementById('contact-count').textContent = items.length;
+
+        if (items.length === 0) {
+          root.innerHTML = '<div class="state-msg"><span class="state-icon">📭</span>No contacts found</div>';
+          return;
+        }
+
+        let html = '<table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Message</th></tr></thead><tbody>';
+        items.forEach(c => {
+          const date = c.receivedAt ? new Date(c.receivedAt).toLocaleString() : '—';
+          html += `<tr>
+            <td><small>${escapeHtml(date)}</small></td>
+            <td><strong>${escapeHtml(c.name || '')}</strong></td>
+            <td><a href="mailto:${escapeHtml(c.email || '')}" style="color:var(--accent)">${escapeHtml(c.email || '')}</a></td>
+            <td>${escapeHtml((c.message || '').substring(0, 80))}${(c.message || '').length > 80 ? '…' : ''}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        root.innerHTML = `<div class="table-wrap">${html}</div>`;
+      }
+
+      // Load orders from Firebase
+      async function loadOrders() {
+        const root = document.getElementById('orders-root');
+        root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading orders from Firebase…</div>';
+        logToConsole('Fetching orders from Firebase...', 'log');
+
+        try {
+          const db = firebase.firestore();
+          const snapshot = await db.collection('orders').orderBy('createdAt', 'desc').limit(100).get();
+          allOrders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          logToConsole(`✓ Loaded ${allOrders.length} orders from Firebase`, 'success');
+          filterAndRenderOrders();
+        } catch (err) {
+          logToConsole(`✗ Failed to load orders: ${err.message}`, 'error');
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load orders.<br><small>Firebase error: ' + escapeHtml(err.message) + '</small></div>';
+        }
+      }
+
+      function filterAndRenderOrders() {
+        const query = (document.getElementById('orders-search').value || '').trim().toLowerCase();
+        const filtered = !query ? allOrders : allOrders.filter(o =>
+          (o.name || '').toLowerCase().includes(query) ||
+          (o.email || '').toLowerCase().includes(query)
+        );
+        renderOrdersTable(filtered);
+      }
+
+      function renderOrdersTable(items) {
+        const root = document.getElementById('orders-root');
+        document.getElementById('orders-count').textContent = items.length;
+
+        if (items.length === 0) {
+          root.innerHTML = '<div class="state-msg"><span class="state-icon">📭</span>No orders found</div>';
+          return;
+        }
+
+        let html = '<table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>';
+        items.forEach(o => {
+          const date = o.createdAt ? new Date(o.createdAt.toDate?.() || o.createdAt).toLocaleString() : '—';
+          const itemCount = o.itemsDetail ? Object.keys(o.itemsDetail).length : 0;
+          const total = CURRENCY + (o.total || 0).toFixed(2);
+          const status = o.status || '—';
+          html += `<tr>
+            <td><small>${escapeHtml(date)}</small></td>
+            <td><strong>${escapeHtml(o.name || '')}</strong></td>
+            <td><a href="mailto:${escapeHtml(o.email || '')}" style="color:var(--accent)">${escapeHtml(o.email || '')}</a></td>
+            <td>${itemCount} item${itemCount !== 1 ? 's' : ''}</td>
+            <td><strong>${total}</strong></td>
+            <td><span style="padding:4px 8px;background:rgba(43,138,74,0.2);border-radius:4px;color:var(--accent);font-size:0.85rem">${escapeHtml(status)}</span></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        root.innerHTML = `<div class="table-wrap">${html}</div>`;
+      }
+
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const tab = btn.dataset.tab;
+          document.getElementById(tab).classList.add('active');
+          if (tab === 'orders') loadOrders();
+          if (tab === 'console') logToConsole('Console tab opened', 'log');
+        });
+      });
+
+      // Event listeners
+      document.getElementById('refresh-btn').addEventListener('click', () => {
+        logToConsole('Refreshing all data...', 'log');
+        loadContacts();
+        if (document.querySelector('.tab-btn.active').dataset.tab === 'orders') loadOrders();
+      });
+
+      document.getElementById('test-btn').addEventListener('click', testBackend);
+      document.getElementById('search-input').addEventListener('input', filterAndRenderContacts);
+      document.getElementById('orders-search').addEventListener('input', filterAndRenderOrders);
+      document.getElementById('clear-console').addEventListener('click', () => {
+        document.getElementById('console-panel').innerHTML = '<div class="log">Console cleared</div>';
+        logToConsole('Console cleared by user', 'log');
+      });
+
+      // Initial load
+      document.addEventListener('DOMContentLoaded', () => {
+        logToConsole('Admin dashboard initialized', 'log');
+        testBackend();
+        setTimeout(loadContacts, 500);
+      });
+    })();
+    </script>
+  </body>
+</html>
         background: rgba(43,138,74,0.04);
       }
 
