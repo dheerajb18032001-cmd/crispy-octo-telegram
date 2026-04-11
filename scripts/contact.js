@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     form.insertBefore(feedback, firstRow);
   }
 
+  // Wait for Firestore to be available
+  async function waitForFirestore(maxWait = 5000) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < maxWait) {
+      if (window.TeaApp && window.TeaApp.db) {
+        return window.TeaApp.db;
+      }
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    throw new Error('Firestore initialization timeout');
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     feedback.textContent = 'Sending...';
@@ -32,12 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // Get Firestore instance from firebase.js if available
-      if (!window.TeaApp || !window.TeaApp.db) {
-        throw new Error('Firestore not initialized');
-      }
-
-      const db = window.TeaApp.db;
+      // Wait for Firestore to initialize
+      const db = await waitForFirestore();
       
       // Save to Firestore contacts collection
       await db.collection('contacts').add({

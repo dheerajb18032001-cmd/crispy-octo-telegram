@@ -83,6 +83,23 @@
       </div>
     </footer>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDPHOcGwRxir9fMu4o4trpajK8p5a1s-C8",
+        authDomain: "teashop-71af9.firebaseapp.com",
+        projectId: "teashop-71af9",
+        storageBucket: "teashop-71af9.firebasestorage.app",
+        messagingSenderId: "480830622073",
+        appId: "1:480830622073:web:13316536f8575a6fbd47a8",
+        measurementId: "G-KCDVEW77SW"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="scripts/firebase.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/contact.js"></script>
   </body>
