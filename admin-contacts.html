@@ -213,6 +213,7 @@
         <div class="tabs">
           <button class="tab-btn active" data-tab="contacts">📧 Contact Forms <span style="font-size:0.7rem;color:#51cf66">●</span></button>
           <button class="tab-btn" data-tab="orders">📦 Orders (Firebase)</button>
+          <button class="tab-btn" data-tab="users">👥 Registered Users</button>
           <button class="tab-btn" data-tab="console">🖥️ Console</button>
         </div>
 
@@ -233,6 +234,15 @@
             <span class="contact-count">Total: <span id="orders-count">0</span></span>
           </div>
           <div id="orders-root" class="table-wrap"></div>
+        </div>
+
+        <!-- Users Tab -->
+        <div class="tab-content" id="users">
+          <div style="display:flex;gap:10px;margin-bottom:16px">
+            <input class="search-bar" id="users-search" placeholder="Search by name, email...">
+            <span class="contact-count">Total: <span id="users-count">0</span></span>
+          </div>
+          <div id="users-root" class="table-wrap"></div>
         </div>
 
         <!-- Console Tab -->
@@ -271,6 +281,7 @@
     (function(){
       let allContacts = [];
       let allOrders = [];
+      let allUsers = [];
       const consoleLogs = [];
 
       const CURRENCY = '₹';
@@ -465,6 +476,58 @@
         root.innerHTML = `<div class="table-wrap">${html}</div>`;
       }
 
+      // Load users from Firestore
+      async function loadUsers() {
+        const root = document.getElementById('users-root');
+        root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading registered users…</div>';
+        logToConsole('Fetching registered users from Firebase...', 'log');
+
+        try {
+          const db = firebase.firestore();
+          const snapshot = await db.collection('users').orderBy('createdAt', 'desc').limit(500).get();
+          allUsers = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          logToConsole(`✓ Loaded ${allUsers.length} registered users from Firebase`, 'success');
+          filterAndRenderUsers();
+        } catch (err) {
+          logToConsole(`✗ Failed to load users: ${err.message}`, 'error');
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load users.<br><small>Firebase error: ' + escapeHtml(err.message) + '</small></div>';
+        }
+      }
+
+      function filterAndRenderUsers() {
+        const query = (document.getElementById('users-search').value || '').trim().toLowerCase();
+        const filtered = !query ? allUsers : allUsers.filter(u =>
+          (u.name || '').toLowerCase().includes(query) ||
+          (u.email || '').toLowerCase().includes(query) ||
+          (u.phone || '').toLowerCase().includes(query)
+        );
+        renderUsersTable(filtered);
+      }
+
+      function renderUsersTable(items) {
+        const root = document.getElementById('users-root');
+        document.getElementById('users-count').textContent = items.length;
+
+        if (items.length === 0) {
+          root.innerHTML = '<div class="state-msg"><span class="state-icon">👤</span>No registered users found</div>';
+          return;
+        }
+
+        let html = '<table><thead><tr><th>Date Joined</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th></tr></thead><tbody>';
+        items.forEach(u => {
+          const date = u.createdAt ? new Date(u.createdAt.toDate?.() || u.createdAt).toLocaleString() : '—';
+          html += `<tr>
+            <td><small>${escapeHtml(date)}</small></td>
+            <td><strong>${escapeHtml(u.name || '—')}</strong></td>
+            <td><a href="mailto:${escapeHtml(u.email || '')}" style="color:var(--accent)">${escapeHtml(u.email || '—')}</a></td>
+            <td><small>${escapeHtml(u.phone || '—')}</small></td>
+            <td><small>${escapeHtml((u.address || '—').substring(0, 50))}</small></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        root.innerHTML = `<div class="table-wrap">${html}</div>`;
+      }
+
       // Tab switching
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -474,6 +537,7 @@
           const tab = btn.dataset.tab;
           document.getElementById(tab).classList.add('active');
           if (tab === 'orders') loadOrders();
+          if (tab === 'users') loadUsers();
           if (tab === 'console') logToConsole('Console tab opened', 'log');
         });
       });
@@ -488,6 +552,7 @@
       document.getElementById('test-btn').addEventListener('click', testBackend);
       document.getElementById('search-input').addEventListener('input', filterAndRenderContacts);
       document.getElementById('orders-search').addEventListener('input', filterAndRenderOrders);
+      document.getElementById('users-search').addEventListener('input', filterAndRenderUsers);
       document.getElementById('clear-console').addEventListener('click', () => {
         document.getElementById('console-panel').innerHTML = '<div class="log">Console cleared</div>';
         logToConsole('Console cleared by user', 'log');
