@@ -3,78 +3,77 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Tea Shop</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Tea Shop - Premium Tea & Beverages</title>
+    <meta name="description" content="Welcome to our premium tea shop. Handcrafted teas, fresh ingredients, and cozy atmosphere.">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
   </head>
-  <body class="home" > 
-    <div class="page">
+  <body class="home">
     <header class="site-header">
-      <div class="container header-inner">
-        <a href="index.html" class="brand" aria-label="Tea Shop home">Tea Shop</a>
-        <div id="auth-ui" style="margin-right:12px;">
-          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
-        </div>
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <a href="index.html" class="brand" aria-label="Tea Shop home">🍵 Tea Shop</a>
         <nav class="nav" role="navigation" aria-label="Main navigation">
           <a href="index.html" aria-current="page">Home</a>
           <a href="menu.html">Menu</a>
           <a href="about.html">About</a>
           <a href="gallery.html">Gallery</a>
           <a href="contact.html">Contact</a>
-          <a href="client-dashboard.html">Client Dashboard</a>
-          <a href="admin-contacts.html" style="color:#176532;font-weight:600">Admin</a>
-          <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
+          <a href="client-dashboard.html">Dashboard</a>
+          <a href="admin-contacts.html" style="color:#059669;font-weight:700">Admin</a>
         </nav>
+        <div id="auth-ui" style="margin:0;white-space:nowrap">
+          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
+        </div>
       </div>
     </header>
 
-    <main class="page-content container">
+    <main class="page-content">
       <section class="hero page-hero">
-        <div class="hero-inner">
+        <div class="container hero-inner">
           <h1 class="hero-title">Welcome to Tea Shop</h1>
-          <p class="hero-sub">Handcrafted teas, cozy space, and friendly service.</p>
+          <p class="hero-sub">Handcrafted teas, fresh ingredients, and cozy atmosphere</p>
           <div class="hero-actions" role="navigation" aria-label="Quick links">
-            <a class="btn btn--ghost" href="index.html">Home</a>
-            <a class="btn btn--outline" href="menu.html">Menu</a>
-            <a class="btn btn--outline" href="gallery.html">Gallery</a>
-            <a class="btn btn--outline" href="contact.html">Contact</a>
-            <a class="btn btn--success" href="order.html">Order</a>
-          </div>
-          <p style="margin-top:1rem"><a class="btn" href="menu.html">See the Menu</a></p>
-          <div class="yt-channel" style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
-            <div class="g-ytsubscribe" data-channel="@TheLallantop" data-layout="default" data-theme="default" data-count="default"></div>
-            <a class="btn primary" href="https://www.youtube.com/@TheLallantop" target="_blank" rel="noopener">Visit our YouTube channel</a>
+            <a class="btn btn--ghost" href="menu.html">☕ Browse Menu</a>
+            <a class="btn btn--outline" href="gallery.html">📷 Gallery</a>
+            <a class="btn btn--success" href="menu.html">🛒 Order Now</a>
           </div>
         </div>
       </section>
 
-      <section class="features">
-        <article class="feature feature-1">
-          <h3>Fresh Ingredients</h3>
-          <p>We use high-quality loose leaf teas and fresh milk.</p>
-        </article>
-        <article class="feature feature-2">
-          <h3>Cozy Atmosphere</h3>
-          <p>Relax in our comfortable seating and enjoy free Wi‑Fi.</p>
-        </article>
-        <article class="feature feature-3">
-          <h3>Local Favorites</h3>
-          <p>Try our seasonal blends and house specials each week.</p>
-        </article>
+      <section class="features container">
+        <div class="feature">
+          <h3>🌿 Fresh Ingredients</h3>
+          <p>We source premium loose leaf teas from around the world and use fresh, locally-sourced milk and ingredients.</p>
+        </div>
+        <div class="feature">
+          <h3>☁️ Cozy Atmosphere</h3>
+          <p>Relax in our comfortable seating, enjoy free Wi‑Fi, and take your time with a good book or conversation.</p>
+        </div>
+        <div class="feature">
+          <h3>⭐ Local Favorites</h3>
+          <p>Try our seasonal blends, house specials, and modern tea creations that change every week.</p>
+        </div>
+      </section>
+
+      <section class="container" style="padding:60px 0;text-align:center">
+        <h2 style="margin-bottom:12px;font-size:1.8rem">Ready to taste the difference?</h2>
+        <p style="margin-bottom:24px;color:var(--muted);font-size:1.05rem">Visit our menu to explore all available teas and beverages</p>
+        <a href="menu.html" class="btn">View Our Full Menu</a>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="container">
-        <p>&copy; Tea Shop — replace with your business name</p>
+        <p style="margin:0">&copy; 2024 Tea Shop — Handcrafted with ☕</p>
+        <small style="color:rgba(255,255,255,0.7);display:block;margin-top:8px">Experience the perfect cup, every time</small>
       </div>
     </footer>
-    
-    </div>
+
+    <div id="login-modal" style="display:none"></div>
 
     <script src="scripts/app.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
-    <!-- Firebase SDK (compat) - replace placeholders with your project config -->
+    <!-- Firebase SDK (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>

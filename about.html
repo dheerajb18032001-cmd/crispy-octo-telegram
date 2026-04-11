@@ -63,18 +63,20 @@
   </head>
   <body class="about">
     <header class="site-header">
-      <div class="container header-inner">
-        <a href="index.html" class="brand" aria-label="Tea Shop home"><img src="assets/logo.svg" alt="Tea Shop logo" height="48"></a>
+      <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+        <a href="index.html" class="brand" aria-label="Tea Shop home">🍵 Tea Shop</a>
         <nav class="nav" role="navigation" aria-label="Main navigation">
           <a href="index.html">Home</a>
           <a href="menu.html">Menu</a>
           <a href="about.html" aria-current="page">About</a>
           <a href="gallery.html">Gallery</a>
           <a href="contact.html">Contact</a>
-          <a href="client-dashboard.html">Client Dashboard</a>
-          <a href="admin-contacts.html" style="color:#176532;font-weight:600">Admin</a>
-          <a href="order.html" class="cart" aria-label="View your order">Order (<span id="cart-count">0</span>)</a>
+          <a href="client-dashboard.html">Dashboard</a>
+          <a href="admin-contacts.html" style="color:#059669;font-weight:700">Admin</a>
         </nav>
+        <div id="auth-ui" style="margin:0;white-space:nowrap">
+          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
+        </div>
       </div>
     </header>
 
