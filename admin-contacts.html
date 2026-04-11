@@ -292,24 +292,23 @@
       // Escape HTML
       function escapeHtml(s){ if(!s)return''; return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);}); }
 
-      // Test backend connectivity
+      // Test Firestore connection
       async function testBackend() {
-        logToConsole('Testing backend connectivity...', 'log');
+        logToConsole('Checking Firestore connection...', 'log');
         try {
-          const res = await fetch('/api/health');
-          if (res.ok) {
-            const data = await res.json();
-            logToConsole(`✓ Backend is online. Database: ${data.dbType || 'unknown'}`, 'success');
-            updateStatusBadge('online', `Backend Online (${data.dbType})`);
-            updateBackendInfo(`✓ Server: ${data.status} | DB: ${data.dbType} | Time: ${new Date(data.time).toLocaleTimeString()}`);
-          } else {
-            logToConsole(`✗ Backend returned error: ${res.status}`, 'error');
-            updateStatusBadge('offline', `Error ${res.status}`);
+          if (!window.TeaApp || !window.TeaApp.db) {
+            throw new Error('Firestore not initialized');
           }
+          
+          const db = window.TeaApp.db;
+          const snapshot = await db.collection('contacts').limit(1).get();
+          logToConsole('✓ Firestore is connected and responding', 'success');
+          updateStatusBadge('online', 'Firestore Online');
+          updateBackendInfo(`✓ Database: Firestore | Status: Connected | Time: ${new Date().toLocaleTimeString()}`);
         } catch (err) {
-          logToConsole(`✗ Backend is unreachable: ${err.message}`, 'error');
-          updateStatusBadge('offline', 'Backend Offline');
-          updateBackendInfo(`⛔ Cannot reach backend. Make sure Express server is running. Error: ${err.message}`);
+          logToConsole(`✗ Firestore connection failed: ${err.message}`, 'error');
+          updateStatusBadge('offline', 'Firestore Offline');
+          updateBackendInfo(`⛔ Firestore error: ${err.message}`);
         }
       }
 
@@ -326,25 +325,39 @@
         if (info) info.textContent = msg;
       }
 
-      // Load contacts from backend
+      // Load contacts from Firestore
       async function loadContacts() {
         const root = document.getElementById('contacts-root');
         root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading contacts…</div>';
-        logToConsole('Fetching contacts from backend...', 'log');
+        logToConsole('Fetching contacts from Firestore...', 'log');
 
         try {
-          const res = await fetch('/api/contacts');
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          allContacts = await res.json();
-          logToConsole(`✓ Loaded ${allContacts.length} contacts`, 'success');
+          if (!window.TeaApp || !window.TeaApp.db) {
+            throw new Error('Firestore not initialized');
+          }
+
+          const db = window.TeaApp.db;
+          const snapshot = await db
+            .collection('contacts')
+            .orderBy('createdAt', 'desc')
+            .limit(200)
+            .get();
+
+          allContacts = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate?.().toISOString?.() || new Date().toISOString(),
+          }));
+
+          logToConsole(`✓ Loaded ${allContacts.length} contacts from Firestore`, 'success');
           filterAndRenderContacts();
-          updateBackendInfo(`✓ Backend connected. Last updated: ${new Date().toLocaleTimeString()}`);
-          updateStatusBadge('online', 'Backend Online');
+          updateBackendInfo(`✓ Firestore connected. Last updated: ${new Date().toLocaleTimeString()}`);
+          updateStatusBadge('online', 'Firestore Online');
         } catch (err) {
           logToConsole(`✗ Failed to load contacts: ${err.message}`, 'error');
-          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Backend may be offline. See console for details.</small></div>';
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore may be unavailable. See console for details.</small></div>';
           updateBackendInfo(`❌ Failed to fetch contacts: ${err.message}`);
-          updateStatusBadge('offline', 'Backend Error');
+          updateStatusBadge('offline', 'Firestore Error');
         }
       }
 

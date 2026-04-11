@@ -11,20 +11,14 @@
     "trailingSlash": false,
     "rewrites": [
       {
-        "source": "/api/**",
-        "function": "api"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
     ]
   },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs18",
-    "timeoutSeconds": 60,
-    "memory": "256MB"
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }
 
