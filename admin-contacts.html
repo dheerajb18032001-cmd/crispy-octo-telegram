@@ -211,16 +211,17 @@
         </div>
 
         <div class="tabs">
-          <button class="tab-btn active" data-tab="contacts">📧 Contact Forms</button>
+          <button class="tab-btn active" data-tab="contacts">📧 Contact Forms <span style="font-size:0.7rem;color:#51cf66">●</span></button>
           <button class="tab-btn" data-tab="orders">📦 Orders (Firebase)</button>
           <button class="tab-btn" data-tab="console">🖥️ Console</button>
         </div>
 
         <!-- Contacts Tab -->
         <div class="tab-content active" id="contacts">
-          <div style="display:flex;gap:10px;margin-bottom:16px">
+          <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center">
             <input class="search-bar" id="search-input" placeholder="Search by name, email...">
             <span class="contact-count">Total: <span id="contact-count">0</span></span>
+            <small style="color:#51cf66;font-weight:600">🔴 LIVE</small>
           </div>
           <div id="contacts-root" class="table-wrap"></div>
         </div>
@@ -325,11 +326,13 @@
         if (info) info.textContent = msg;
       }
 
-      // Load contacts from Firestore
+      // Load contacts from Firestore with real-time updates
+      let contactsUnsubscribe = null;
+      
       async function loadContacts() {
         const root = document.getElementById('contacts-root');
         root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading contacts…</div>';
-        logToConsole('Fetching contacts from Firestore...', 'log');
+        logToConsole('Setting up real-time listener for Firestore...', 'log');
 
         try {
           if (!window.TeaApp || !window.TeaApp.db) {
@@ -337,26 +340,39 @@
           }
 
           const db = window.TeaApp.db;
-          const snapshot = await db
+          
+          // Unsubscribe from previous listener if it exists
+          if (contactsUnsubscribe) contactsUnsubscribe();
+          
+          // Set up real-time listener
+          contactsUnsubscribe = db
             .collection('contacts')
             .orderBy('createdAt', 'desc')
             .limit(200)
-            .get();
+            .onSnapshot(
+              snapshot => {
+                allContacts = snapshot.docs.map(doc => ({
+                  id: doc.id,
+                  ...doc.data(),
+                  createdAt: doc.data().createdAt?.toDate?.().toISOString?.() || new Date().toISOString(),
+                }));
 
-          allContacts = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate?.().toISOString?.() || new Date().toISOString(),
-          }));
-
-          logToConsole(`✓ Loaded ${allContacts.length} contacts from Firestore`, 'success');
-          filterAndRenderContacts();
-          updateBackendInfo(`✓ Firestore connected. Last updated: ${new Date().toLocaleTimeString()}`);
-          updateStatusBadge('online', 'Firestore Online');
+                logToConsole(`✓ Real-time: Loaded ${allContacts.length} contacts`, 'success');
+                filterAndRenderContacts();
+                updateBackendInfo(`✓ Firestore live. Updated: ${new Date().toLocaleTimeString()}`);
+                updateStatusBadge('online', 'Firestore Live');
+              },
+              err => {
+                logToConsole(`✗ Real-time listener error: ${err.message}`, 'error');
+                root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore listener failed. See console for details.</small></div>';
+                updateBackendInfo(`❌ Listener error: ${err.message}`);
+                updateStatusBadge('offline', 'Firestore Error');
+              }
+            );
         } catch (err) {
-          logToConsole(`✗ Failed to load contacts: ${err.message}`, 'error');
-          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore may be unavailable. See console for details.</small></div>';
-          updateBackendInfo(`❌ Failed to fetch contacts: ${err.message}`);
+          logToConsole(`✗ Failed to setup listener: ${err.message}`, 'error');
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore initialization failed. See console for details.</small></div>';
+          updateBackendInfo(`❌ Failed to setup listener: ${err.message}`);
           updateStatusBadge('offline', 'Firestore Error');
         }
       }
