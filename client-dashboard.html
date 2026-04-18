@@ -202,7 +202,7 @@
           html += '<tr><td>' + escapeHtml(it.name) + '</td><td style="text-align:center">' + it.qty + '</td><td>' + CURRENCY + line.toFixed(0) + '</td></tr>';
         });
         html += '</tbody></table>';
-        html += '<div class="dash-cart-total">Total: $' + total.toFixed(0) + '</div>';
+        html += '<div class="dash-cart-total">Total: ₹' + total.toFixed(0) + '</div>';
         html += '<div class="dash-cart-actions">';
         html += '<button class="btn btn--sm btn--success" id="dash-place-order">Place Order</button>';
         html += '<button class="btn btn--sm btn--outline" style="color:#fff;border-color:rgba(255,255,255,0.3)" id="dash-clear-cart">Clear Cart</button>';

@@ -1,7 +1,7 @@
 // Cart system: +/- qty controls on menu items, floating cart FAB, drawer popup, toast
 (function(){
   const CART_KEY = 'cart';
-  const CURRENCY = '$';
+  const CURRENCY = '₹';
 
   // ---- Data layer ----
   function getCart(){
