@@ -16,17 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     form.insertBefore(feedback, firstRow);
   }
 
-  // Wait for Firestore to be available
-  async function waitForFirestore(maxWait = 5000) {
-    const startTime = Date.now();
-    while (Date.now() - startTime < maxWait) {
-      if (window.TeaApp && window.TeaApp.db) {
-        return window.TeaApp.db;
-      }
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    throw new Error('Firestore initialization timeout');
-  }
+  // Backend API URL (adjust if backend is hosted elsewhere)
+  const API_URL = 'http://localhost:3000/api/contact';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -44,26 +35,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // Wait for Firestore to initialize
-      const db = await waitForFirestore();
-      
-      // Save to Firestore contacts collection
-      await db.collection('contacts').add({
-        name: name,
-        email: email,
-        message: message,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        status: 'new'
+      // Send to backend server
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          message: message
+        })
       });
 
-      feedback.style.color = 'green';
-      feedback.textContent = 'Thanks — your message was received. ✓';
-      form.reset();
-      
-      // Clear feedback after 3 seconds
-      setTimeout(() => {
-        feedback.textContent = '';
-      }, 3000);
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.ok) {
+        feedback.style.color = 'green';
+        feedback.textContent = 'Thanks — your message was received. ✓';
+        form.reset();
+        
+        // Clear feedback after 3 seconds
+        setTimeout(() => {
+          feedback.textContent = '';
+        }, 3000);
+      } else {
+        throw new Error(result.error || 'Failed to save message');
+      }
     } catch (err) {
       feedback.style.color = 'crimson';
       feedback.textContent = err.message ? `Error: ${err.message}` : 'Failed to send message. Please try again.';
