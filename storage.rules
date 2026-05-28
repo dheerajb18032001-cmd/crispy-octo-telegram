@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Certificate files
+    match /certificates/{allPaths=**} {
+      // Allow authenticated users to read certificate files
+      allow read: if request.auth != null;
+      
+      // Allow authenticated users to upload files up to 5MB
+      allow write: if request.auth != null 
+                   && request.resource.size <= 5 * 1024 * 1024
+                   && request.resource.contentType in [
+                     'application/pdf',
+                     'image/jpeg',
+                     'image/png'
+                   ];
+      
+      // Delete only allowed for admins
+      allow delete: if isAdmin();
+    }
+
+    // Asset files (public)
+    match /assets/{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if false;
+    }
+
+    // Deny all other paths by default
+    match /{allPaths=**} {
+      allow read, write, delete: if false;
+    }
+
+    // Helper function
+    function isAdmin() {
+      return request.auth != null && request.auth.token.get('admin') == true;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+// Firestore rules for certificate management
+// Add these rules to your existing firestore.rules file
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Certificates Collection
+    match /certificates/{documentId} {
+      // Users can read their own certificates
+      allow read: if request.auth.uid == resource.data.userId;
+      
+      // Users can create new certificates
+      allow create: if request.auth.uid != null
+                    && request.auth.uid == request.resource.data.userId
+                    && request.resource.data.status == 'pending'
+                    && request.resource.data.uploadedAt == request.time;
+      
+      // Admins can read all certificates
+      allow read: if isAdmin();
+      
+      // Admins can update status, notes, and verification info
+      allow update: if isAdmin()
+                    && request.resource.data.userId == resource.data.userId
+                    && request.resource.data.fileName == resource.data.fileName;
+    }
+    
+    // Helper function to check admin status
+    // Note: You'll need to implement this based on your admin setup
+    // Option 1: Check custom claims
+    function isAdmin() {
+      return request.auth.token.get('admin') == true;
+    }
+    
+    // Option 2: Check against admin collection (recommended)
+    // function isAdmin() {
+    //   return exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    // }
+  }
+}
