@@ -58,6 +58,11 @@
 
       @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
+      @keyframes fadeOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-20px); }
+      }
+
       .tabs {
         display: flex;
         gap: 0;
@@ -372,14 +377,11 @@
       async function loadContacts() {
         const root = document.getElementById('contacts-root');
         root.innerHTML = '<div class="state-msg"><span class="state-icon">⏳</span>Loading contacts…</div>';
-        logToConsole('Setting up real-time listener for Firestore...', 'log');
+        logToConsole('Loading contacts from Firestore...', 'log');
 
         try {
-          if (!window.TeaApp || !window.TeaApp.db) {
-            throw new Error('Firestore not initialized');
-          }
-
-          const db = window.TeaApp.db;
+          // Use firebase directly instead of window.TeaApp
+          const db = firebase.firestore();
           
           // Unsubscribe from previous listener if it exists
           if (contactsUnsubscribe) contactsUnsubscribe();
@@ -394,24 +396,24 @@
                 allContacts = snapshot.docs.map(doc => ({
                   id: doc.id,
                   ...doc.data(),
-                  createdAt: doc.data().createdAt?.toDate?.().toISOString?.() || new Date().toISOString(),
+                  createdAt: doc.data().createdAt?.toDate?.() || new Date(doc.data().receivedAt),
                 }));
 
-                logToConsole(`✓ Real-time: Loaded ${allContacts.length} contacts`, 'success');
+                logToConsole(`✓ Loaded ${allContacts.length} contacts from Firestore`, 'success');
                 filterAndRenderContacts();
                 updateBackendInfo(`✓ Firestore live. Updated: ${new Date().toLocaleTimeString()}`);
                 updateStatusBadge('online', 'Firestore Live');
               },
               err => {
-                logToConsole(`✗ Real-time listener error: ${err.message}`, 'error');
-                root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore listener failed. See console for details.</small></div>';
+                logToConsole(`✗ Firestore listener error: ${err.message}`, 'error');
+                root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>' + escapeHtml(err.message) + '</small></div>';
                 updateBackendInfo(`❌ Listener error: ${err.message}`);
                 updateStatusBadge('offline', 'Firestore Error');
               }
             );
         } catch (err) {
           logToConsole(`✗ Failed to setup listener: ${err.message}`, 'error');
-          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>Firestore initialization failed. See console for details.</small></div>';
+          root.innerHTML = '<div class="state-msg error"><span class="state-icon">⚠️</span>Cannot load contacts.<br><small>' + escapeHtml(err.message) + '</small></div>';
           updateBackendInfo(`❌ Failed to setup listener: ${err.message}`);
           updateStatusBadge('offline', 'Firestore Error');
         }
@@ -436,18 +438,43 @@
           return;
         }
 
-        let html = '<table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Message</th></tr></thead><tbody>';
+        let html = '<table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Message</th><th>Action</th></tr></thead><tbody>';
         items.forEach(c => {
-          const date = c.receivedAt ? new Date(c.receivedAt).toLocaleString() : '—';
+          const date = c.createdAt ? new Date(c.createdAt).toLocaleString() : (c.receivedAt ? new Date(c.receivedAt).toLocaleString() : '—');
+          const msgPreview = (c.message || '').substring(0, 60);
           html += `<tr>
             <td><small>${escapeHtml(date)}</small></td>
             <td><strong>${escapeHtml(c.name || '')}</strong></td>
             <td><a href="mailto:${escapeHtml(c.email || '')}" style="color:var(--accent)">${escapeHtml(c.email || '')}</a></td>
-            <td>${escapeHtml((c.message || '').substring(0, 80))}${(c.message || '').length > 80 ? '…' : ''}</td>
+            <td title="${escapeHtml(c.message || '')}">${escapeHtml(msgPreview)}${(c.message || '').length > 60 ? '…' : ''}</td>
+            <td>
+              <button class="delete-btn" data-id="${escapeHtml(c.id)}" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:0.85rem;font-weight:600">Delete</button>
+            </td>
           </tr>`;
         });
         html += '</tbody></table>';
         root.innerHTML = `<div class="table-wrap">${html}</div>`;
+        
+        // Add delete event listeners
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', () => deleteContact(btn.dataset.id, btn));
+        });
+      }
+      
+      // Delete contact from Firestore
+      async function deleteContact(contactId, btn) {
+        if (!confirm('Are you sure you want to delete this contact?')) return;
+        
+        try {
+          const db = firebase.firestore();
+          await db.collection('contacts').doc(contactId).delete();
+          logToConsole(`✓ Contact deleted successfully`, 'success');
+          btn.closest('tr').style.animation = 'fadeOut 0.3s ease-out';
+          setTimeout(() => btn.closest('tr').remove(), 300);
+        } catch (err) {
+          logToConsole(`✗ Failed to delete contact: ${err.message}`, 'error');
+          alert('Failed to delete contact: ' + err.message);
+        }
       }
 
       // Load orders from Firebase
@@ -565,6 +592,7 @@
           btn.classList.add('active');
           const tab = btn.dataset.tab;
           document.getElementById(tab).classList.add('active');
+          if (tab === 'contacts') loadContacts();
           if (tab === 'orders') loadOrders();
           if (tab === 'users') loadUsers();
           if (tab === 'console') logToConsole('Console tab opened', 'log');
