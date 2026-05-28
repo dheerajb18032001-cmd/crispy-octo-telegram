@@ -476,6 +476,22 @@
           alert('Failed to delete contact: ' + err.message);
         }
       }
+      
+      // Delete user from Firestore
+      async function deleteUser(userId, btn) {
+        if (!confirm('Are you sure you want to delete this user?')) return;
+        
+        try {
+          const db = firebase.firestore();
+          await db.collection('users').doc(userId).delete();
+          logToConsole(`✓ User deleted successfully`, 'success');
+          btn.closest('tr').style.animation = 'fadeOut 0.3s ease-out';
+          setTimeout(() => btn.closest('tr').remove(), 300);
+        } catch (err) {
+          logToConsole(`✗ Failed to delete user: ${err.message}`, 'error');
+          alert('Failed to delete user: ' + err.message);
+        }
+      }
 
       // Load orders from Firebase
       async function loadOrders() {
@@ -569,7 +585,7 @@
           return;
         }
 
-        let html = '<table><thead><tr><th>Date Joined</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th></tr></thead><tbody>';
+        let html = '<table><thead><tr><th>Date Joined</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Action</th></tr></thead><tbody>';
         items.forEach(u => {
           const date = u.createdAt ? new Date(u.createdAt.toDate?.() || u.createdAt).toLocaleString() : '—';
           html += `<tr>
@@ -578,10 +594,18 @@
             <td><a href="mailto:${escapeHtml(u.email || '')}" style="color:var(--accent)">${escapeHtml(u.email || '—')}</a></td>
             <td><small>${escapeHtml(u.phone || '—')}</small></td>
             <td><small>${escapeHtml((u.address || '—').substring(0, 50))}</small></td>
+            <td>
+              <button class="delete-user-btn" data-id="${escapeHtml(u.id)}" style="background:#dc2626;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:0.85rem;font-weight:600">Delete</button>
+            </td>
           </tr>`;
         });
         html += '</tbody></table>';
         root.innerHTML = `<div class="table-wrap">${html}</div>`;
+        
+        // Add delete event listeners
+        document.querySelectorAll('.delete-user-btn').forEach(btn => {
+          btn.addEventListener('click', () => deleteUser(btn.dataset.id, btn));
+        });
       }
 
       // Tab switching
