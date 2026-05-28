@@ -54,6 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const result = await response.json();
 
+      // Also save to Firebase Firestore for admin panel
+      if (window.firebase && window.firebase.firestore) {
+        try {
+          const db = firebase.firestore();
+          await db.collection('contacts').add({
+            name: name,
+            email: email,
+            message: message,
+            status: 'new',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            receivedAt: new Date()
+          });
+        } catch (fbErr) {
+          console.warn('Failed to save to Firestore (non-critical):', fbErr);
+        }
+      }
+
       if (result.ok) {
         feedback.style.color = 'green';
         feedback.textContent = 'Thanks — your message was received. ✓';
