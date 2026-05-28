@@ -56,6 +56,19 @@
       .logo-strip img:hover{transform:scale(1.06)}
       .logo-strip img.logo-lg{height:110px}
 
+      /* Map section */
+      .map-section{padding:40px 0;background:#f9fafb;border-radius:12px;margin:40px 0}
+      .map-section h2{font-size:1.4rem;margin-bottom:20px;text-align:center;color:var(--text);position:relative;padding-bottom:8px}
+      .map-section h2::after{content:"";display:block;height:4px;width:80px;background:var(--accent);border-radius:4px;margin:8px auto 0}
+      .map-container{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+      @media(max-width:760px){.map-container{grid-template-columns:1fr}}
+      #map{height:400px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+      .location-info{background:var(--panel);padding:24px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.05)}
+      .location-info h3{font-size:1.1rem;margin-bottom:16px;color:var(--text)}
+      .location-detail{margin-bottom:14px;line-height:1.6;color:var(--muted)}
+      .location-detail strong{color:var(--text);display:block;font-weight:600}
+      .location-detail em{font-style:italic;color:var(--accent)}
+
       /* CTA */
       .about-cta{text-align:center;padding:32px 0 0}
       .about-cta p{color:var(--muted);margin-bottom:14px;font-size:1.02rem}
@@ -106,6 +119,36 @@
               <li><span class="day">Saturday</span> <time>9:00 AM – 9:00 PM</time></li>
               <li><span class="day">Sunday</span> <time>9:00 AM – 6:00 PM</time></li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Map Section -->
+      <section class="container map-section">
+        <h2>📍 Find Us</h2>
+        <div class="map-container">
+          <div id="map"></div>
+          <div class="location-info">
+            <h3>Tea Shop Location</h3>
+            <div class="location-detail">
+              <strong>Address</strong>
+              <em>123 Tea Street, Corner Plaza</em><br>
+              City, State 12345
+            </div>
+            <div class="location-detail">
+              <strong>Phone</strong><br>
+              (555) 123-4567
+            </div>
+            <div class="location-detail">
+              <strong>Email</strong><br>
+              hello@teashop.local
+            </div>
+            <div class="location-detail">
+              <strong>Hours</strong><br>
+              Mon-Fri: 8:00 AM – 8:00 PM<br>
+              Sat: 9:00 AM – 9:00 PM<br>
+              Sun: 9:00 AM – 6:00 PM
+            </div>
           </div>
         </div>
       </section>
@@ -161,5 +204,66 @@
 
     <script src="scripts/app.js"></script>
     <script src="scripts/cart.js"></script>
+    
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+    <script>
+      function initMap() {
+        // Default location: Tea Shop
+        const teaShopLocation = {
+          lat: 40.7128,
+          lng: -74.0060
+        };
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: teaShopLocation,
+          mapTypeControl: true,
+          fullscreenControl: true,
+          streetViewControl: false,
+          styles: [
+            {
+              featureType: 'all',
+              elementType: 'all',
+              stylers: [{ saturation: -10 }]
+            },
+            {
+              featureType: 'water',
+              elementType: 'geometry',
+              stylers: [{ color: '#d9ecf9' }]
+            }
+          ]
+        });
+
+        // Add marker
+        const marker = new google.maps.Marker({
+          position: teaShopLocation,
+          map: map,
+          title: 'Tea Shop',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/7cb342-marker.png'
+        });
+
+        // Info window
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div style="width: 200px; font-family: Arial, sans-serif;">
+              <h3 style="margin: 0 0 8px 0; color: #0f3b2e;">Tea Shop</h3>
+              <p style="margin: 4px 0; font-size: 12px; color: #666;">
+                <strong>Address:</strong> 123 Tea Street, Corner Plaza<br>
+                <strong>Phone:</strong> (555) 123-4567<br>
+                <strong>Hours:</strong> Mon-Fri 8AM-8PM
+              </p>
+            </div>
+          `
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+      }
+
+      // Initialize map when page loads
+      document.addEventListener('DOMContentLoaded', initMap);
+    </script>
   </body>
 </html>
