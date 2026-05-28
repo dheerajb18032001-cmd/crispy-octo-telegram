@@ -10,11 +10,64 @@
   }
   function saveCart(cart){
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    
+    // Also save to Firestore for persistent storage
+    if (window.firebase && window.firebase.firestore && window.firebase.auth) {
+      const user = window.firebase.auth().currentUser;
+      if (user) {
+        try {
+          const db = window.firebase.firestore();
+          db.collection('carts').doc(user.uid).set({
+            items: cart,
+            updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+          }).catch(err => console.warn('Cart save to Firestore failed:', err));
+        } catch (e) {
+          console.warn('Firestore cart save error:', e);
+        }
+      }
+    }
+    
     updateAllQtyDisplays();
     updateFabBadge();
   }
+  
+  // Load cart from Firestore if user is logged in
+  function loadCartFromFirestore() {
+    if (window.firebase && window.firebase.firestore && window.firebase.auth) {
+      const user = window.firebase.auth().currentUser;
+      if (user) {
+        try {
+          const db = window.firebase.firestore();
+          db.collection('carts').doc(user.uid).get().then(doc => {
+            if (doc.exists && doc.data().items) {
+              localStorage.setItem(CART_KEY, JSON.stringify(doc.data().items));
+              updateAllQtyDisplays();
+              updateFabBadge();
+            }
+          }).catch(err => console.warn('Firestore cart load failed:', err));
+        } catch (e) {
+          console.warn('Firestore cart load error:', e);
+        }
+      }
+    }
+  }
+  
   function clearCart(){
     localStorage.removeItem(CART_KEY);
+    
+    // Also clear from Firestore
+    if (window.firebase && window.firebase.firestore && window.firebase.auth) {
+      const user = window.firebase.auth().currentUser;
+      if (user) {
+        try {
+          const db = window.firebase.firestore();
+          db.collection('carts').doc(user.uid).delete().catch(err => console.warn('Firestore cart clear failed:', err));
+        } catch (e) {
+          console.warn('Firestore cart clear error:', e);
+        }
+      }
+    }
+    
     updateAllQtyDisplays();
     updateFabBadge();
   }
@@ -314,6 +367,9 @@
   // ---- Init ----
   document.addEventListener('DOMContentLoaded', function(){
     updateCartCount();
+    
+    // Load cart from Firestore if user is logged in (persistent storage)
+    loadCartFromFirestore();
 
     // If menu items exist, set up +/- controls
     if(document.querySelector('.menu-item')) {
@@ -330,7 +386,7 @@
 
     var checkoutBtn = document.getElementById('checkout');
     if(checkoutBtn) checkoutBtn.addEventListener('click', function(){
-      alert('Order placed \u2014 thank you!');
+      alert('Order placed — thank you!');
       clearCart();
       renderOrderPage();
     });

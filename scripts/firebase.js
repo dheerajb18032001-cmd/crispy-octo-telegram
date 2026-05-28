@@ -123,6 +123,15 @@
           await db.collection('users').doc(userCredential.user.uid).set({ email: email, name: displayName || null, uid: userCredential.user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
         }
       }catch(e){ console.warn('Failed to write user doc', e); }
+      // Load cart from Firestore if it exists
+      try{
+        if (db && userCredential.user && userCredential.user.uid){
+          const cartDoc = await db.collection('carts').doc(userCredential.user.uid).get();
+          if(cartDoc.exists && cartDoc.data().items){
+            localStorage.setItem('cart', JSON.stringify(cartDoc.data().items));
+          }
+        }
+      }catch(e){ console.warn('Failed to load cart from Firestore', e); }
       if (errEl) { errEl.style.color = 'green'; errEl.textContent = 'Registration successful.'; setTimeout(closeLogin, 900); } else closeLogin();
     }catch(err){
       console.error(err);
@@ -140,6 +149,15 @@
     try{
       const user = await auth.signInWithEmailAndPassword(email, pass);
       console.log('Signed in', user);
+      // Load cart from Firestore if it exists
+      try{
+        if (db && user.user && user.user.uid){
+          const cartDoc = await db.collection('carts').doc(user.user.uid).get();
+          if(cartDoc.exists && cartDoc.data().items){
+            localStorage.setItem('cart', JSON.stringify(cartDoc.data().items));
+          }
+        }
+      }catch(e){ console.warn('Failed to load cart from Firestore', e); }
       if (errEl) { errEl.style.color = 'green'; errEl.textContent = 'Signed in!'; }
       setTimeout(closeLogin, 600);
     }catch(err){
