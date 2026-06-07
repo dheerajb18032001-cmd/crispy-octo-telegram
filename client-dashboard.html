@@ -70,18 +70,18 @@
   <body>
     <header class="site-header">
       <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
-        <a href="index.html" class="brand" aria-label="Tea Shop home">🍵 Tea Shop</a>
+        <a href="index.html" class="brand" aria-label="Tea Shop home" data-translate="brand">🍵 Tea Shop</a>
         <nav class="nav" role="navigation" aria-label="Main navigation">
-          <a href="index.html">Home</a>
-          <a href="menu.html">Menu</a>
-          <a href="about.html">About</a>
-          <a href="gallery.html">Gallery</a>
-          <a href="contact.html">Contact</a>
-          <a href="client-dashboard.html" aria-current="page">Dashboard</a>
-          <a href="admin-contacts.html" style="color:#059669;font-weight:700">Admin</a>
+          <a href="index.html" data-translate="nav_home">Home</a>
+          <a href="menu.html" data-translate="nav_menu">Menu</a>
+          <a href="about.html" data-translate="nav_about">About</a>
+          <a href="gallery.html" data-translate="nav_gallery">Gallery</a>
+          <a href="contact.html" data-translate="nav_contact">Contact</a>
+          <a href="client-dashboard.html" aria-current="page" data-translate="nav_dashboard">Dashboard</a>
+          <a href="admin-contacts.html" style="color:#059669;font-weight:700" data-translate="nav_admin">Admin</a>
         </nav>
         <div id="auth-ui" style="margin:0;white-space:nowrap">
-          <button id="btn-signin" class="btn btn--sm btn--outline">Sign In</button>
+          <button id="btn-signin" class="btn btn--sm btn--outline" data-translate="sign_in">Sign In</button>
         </div>
       </div>
     </header>
@@ -89,7 +89,7 @@
     <main class="dash-container">
       <!-- Title row with auth -->
       <div class="dash-title-row">
-        <h1>Client Dashboard</h1>
+        <h1 data-translate="dashboard_title">Client Dashboard</h1>
         <div class="dash-auth" id="dash-auth">
           <!-- filled by JS -->
         </div>
@@ -97,39 +97,39 @@
 
       <!-- Sign In prompt (shown when not logged in) -->
       <div id="signin-prompt" class="signin-prompt" style="display:none">
-        <h2>Sign In to View Your Dashboard</h2>
-        <p>Please sign in to see your profile, cart, and order history.</p>
-        <button class="btn btn--success" id="signin-prompt-btn">Sign In Now</button>
+        <h2 data-translate="signin_prompt">Sign In to View Your Dashboard</h2>
+        <p data-translate="signin_prompt_desc">Please sign in to see your profile, cart, and order history.</p>
+        <button class="btn btn--success" id="signin-prompt-btn" data-translate="signin_now">Sign In Now</button>
       </div>
 
       <!-- ===== Your Info ===== -->
       <div class="dash-card" id="info-section" style="display:none">
-        <h2>Your Info</h2>
+        <h2 data-translate="your_info">Your Info</h2>
         <form id="info-form" autocomplete="on">
           <div class="info-grid">
-            <label for="info-name">Name:</label>
-            <input id="info-name" name="name" type="text" placeholder="Optional name" autocomplete="name">
-            <label for="info-email">Email:</label>
-            <input id="info-email" name="email" type="email" placeholder="Optional email" autocomplete="email">
-            <label for="info-phone">Phone:</label>
-            <input id="info-phone" name="phone" type="tel" placeholder="Mobile number" autocomplete="tel">
+            <label for="info-name" data-translate="label_name">Name:</label>
+            <input id="info-name" name="name" type="text" placeholder="Optional name" autocomplete="name" data-translate="placeholder_name" data-translate-placeholder>
+            <label for="info-email" data-translate="label_email">Email:</label>
+            <input id="info-email" name="email" type="email" placeholder="Optional email" autocomplete="email" data-translate="placeholder_email" data-translate-placeholder>
+            <label for="info-phone" data-translate="label_phone">Phone:</label>
+            <input id="info-phone" name="phone" type="tel" placeholder="Mobile number" autocomplete="tel" data-translate="placeholder_phone" data-translate-placeholder>
           </div>
           <div style="margin-top:8px">
-            <label for="info-address" style="font-weight:600;color:var(--muted);font-size:0.92rem">Address (optional)</label>
-            <textarea id="info-address" name="address" placeholder="Address (optional)" autocomplete="street-address" style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid rgba(0,0,0,0.10);border-radius:6px;font-family:inherit;font-size:0.95rem;background:var(--bg);color:var(--text);min-height:52px;resize:vertical"></textarea>
+            <label for="info-address" style="font-weight:600;color:var(--muted);font-size:0.92rem" data-translate="label_address">Address (optional)</label>
+            <textarea id="info-address" name="address" placeholder="Address (optional)" autocomplete="street-address" data-translate="placeholder_address" data-translate-placeholder style="width:100%;margin-top:4px;padding:7px 10px;border:1px solid rgba(0,0,0,0.10);border-radius:6px;font-family:inherit;font-size:0.95rem;background:var(--bg);color:var(--text);min-height:52px;resize:vertical"></textarea>
           </div>
           <div class="info-actions">
-            <button type="submit" class="btn btn--sm">Save Info</button>
+            <button type="submit" class="btn btn--sm" data-translate="save_info">Save Info</button>
           </div>
         </form>
       </div>
 
       <!-- ===== Your Cart ===== -->
       <div class="dash-card" id="cart-section" style="display:none">
-        <h2>Your Cart</h2>
+        <h2 data-translate="your_cart">Your Cart</h2>
         <div class="dash-cart-wrap">
           <div id="dash-cart-body">
-            <div class="dash-cart-empty">Your cart is empty. <a href="menu.html" style="color:#fff;text-decoration:underline">Browse the menu</a></div>
+            <div class="dash-cart-empty" data-translate="cart_empty">Your cart is empty. <a href="menu.html" style="color:#fff;text-decoration:underline" data-translate="browse_menu">Browse the menu</a></div>
           </div>
         </div>
       </div>
@@ -137,11 +137,11 @@
       <!-- ===== Recent Orders ===== -->
       <div class="dash-card" id="orders-section" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between">
-          <h2 style="border:none;padding:0;margin:0">Recent Orders</h2>
-          <button class="btn btn--sm btn--outline" id="test-order-btn">📋 Create Test Order</button>
+          <h2 style="border:none;padding:0;margin:0" data-translate="recent_orders">Recent Orders</h2>
+          <button class="btn btn--sm btn--outline" id="test-order-btn" data-translate="create_test_order">📋 Create Test Order</button>
         </div>
         <div id="orders-body">
-          <p style="color:var(--muted);text-align:center;padding:18px">Loading orders…</p>
+          <p style="color:var(--muted);text-align:center;padding:18px" data-translate="loading_orders">Loading orders…</p>
         </div>
       </div>
     </main>
@@ -155,6 +155,8 @@
     <script src="scripts/theme.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/cart.js"></script>
+    <script src="scripts/translations.js"></script>
+    <script src="scripts/language.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -199,21 +201,29 @@
         var cart = getCart();
         var items = Object.values(cart);
         if(items.length === 0){
-          body.innerHTML = '<div class="dash-cart-empty">Your cart is empty. <a href="menu.html" style="color:#fff;text-decoration:underline">Browse the menu</a></div>';
+          var emptyText = window.t('cart_empty');
+          var browseText = window.t('browse_menu');
+          body.innerHTML = '<div class="dash-cart-empty">' + emptyText + ' <a href="menu.html" style="color:#fff;text-decoration:underline">' + browseText + '</a></div>';
           return;
         }
         var total = 0;
-        var html = '<table class="dash-cart-table"><thead><tr><th>Item</th><th>Qty</th><th>Line</th></tr></thead><tbody>';
+        var itemHeader = window.t('cart_item');
+        var qtyHeader = window.t('cart_qty');
+        var lineHeader = window.t('cart_line');
+        var html = '<table class="dash-cart-table"><thead><tr><th>' + itemHeader + '</th><th>' + qtyHeader + '</th><th>' + lineHeader + '</th></tr></thead><tbody>';
         items.forEach(function(it){
           var line = (it.price||0) * (it.qty||0);
           total += line;
           html += '<tr><td>' + escapeHtml(it.name) + '</td><td style="text-align:center">' + it.qty + '</td><td>' + CURRENCY + line.toFixed(0) + '</td></tr>';
         });
         html += '</tbody></table>';
-        html += '<div class="dash-cart-total">Total: ₹' + total.toFixed(0) + '</div>';
+        var totalLabel = window.t('cart_total');
+        html += '<div class="dash-cart-total">' + totalLabel + '₹' + total.toFixed(0) + '</div>';
         html += '<div class="dash-cart-actions">';
-        html += '<button class="btn btn--sm btn--success" id="dash-place-order">Place Order</button>';
-        html += '<button class="btn btn--sm btn--outline" style="color:#fff;border-color:rgba(255,255,255,0.3)" id="dash-clear-cart">Clear Cart</button>';
+        var placeOrderBtn = window.t('place_order');
+        var clearCartBtn = window.t('clear_cart');
+        html += '<button class="btn btn--sm btn--success" id="dash-place-order">' + placeOrderBtn + '</button>';
+        html += '<button class="btn btn--sm btn--outline" style="color:#fff;border-color:rgba(255,255,255,0.3)" id="dash-clear-cart">' + clearCartBtn + '</button>';
         html += '</div>';
         body.innerHTML = html;
 
@@ -225,7 +235,7 @@
 
         document.getElementById('dash-place-order').addEventListener('click', function(){
           var user = auth.currentUser;
-          if(!user){ alert('Please sign in first.'); return; }
+          if(!user){ alert(window.t('please_signin')); return; }
           placeOrder(user);
         });
       }
@@ -239,7 +249,7 @@
           items[it.name] = (it.qty||0);
           total += (it.price||0) * (it.qty||0);
         });
-        if(Object.keys(items).length === 0){ alert('Cart is empty.'); return; }
+        if(Object.keys(items).length === 0){ alert(window.t('cart_is_empty')); return; }
 
         // Build detail strings
         var detailParts = [];
@@ -265,14 +275,14 @@
           status: 'pending',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(function(){
-          alert('Order placed — thank you!');
+          alert(window.t('order_placed'));
           localStorage.removeItem(CART_KEY);
           var el = document.getElementById('cart-count'); if(el) el.textContent='0';
           renderDashCart();
           loadOrders(user);
         }).catch(function(err){
           console.error(err);
-          alert('Failed to place order: ' + err.message);
+          alert(window.t('failed_place_order') + err.message);
         });
       }
 
@@ -307,10 +317,10 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           };
           db.collection('users').doc(user.uid).set(data, {merge:true}).then(function(){
-            alert('Info saved!');
+            alert(window.t('info_saved'));
           }).catch(function(err){
             console.error(err);
-            alert('Failed to save: ' + err.message);
+            alert(window.t('failed_save_info') + err.message);
           });
         });
       }
@@ -327,7 +337,9 @@
           .get()
           .then(function(snap){
             if(snap.empty){
-              body.innerHTML = '<p style="color:var(--muted);text-align:center;padding:18px">No orders yet. <a href="menu.html">Start ordering!</a></p>';
+              var noOrdersMsg = window.t('no_orders');
+              var startOrderingMsg = window.t('start_ordering');
+              body.innerHTML = '<p style="color:var(--muted);text-align:center;padding:18px">' + noOrdersMsg + ' <a href="menu.html">' + startOrderingMsg + '</a></p>';
               return;
             }
             var html = '<ul class="orders-ul">';
@@ -345,7 +357,8 @@
               html += '<span class="order-header">' + dateStr + ' — ' + '<span class="order-user">' + userName + '</span>';
               if(totalStr) html += ' — <span class="order-total">' + totalStr + '</span>';
               var status = o.status || 'pending';
-              html += ' — <span class="order-status-badge ' + status + '">' + status + '</span>';
+              var statusLabel = window.t('status_' + status);
+              html += ' — <span class="order-status-badge ' + status + '">' + statusLabel + '</span>';
               html += ' <a class="order-info-link" data-id="' + doc.id + '">(info)</a>';
               html += '</span>';
 
@@ -378,13 +391,13 @@
           })
           .catch(function(err){
             console.error('Error loading orders:', err);
-            body.innerHTML = '<p style="color:var(--danger);text-align:center;padding:18px">Error loading orders.</p>';
+            body.innerHTML = '<p style="color:var(--danger);text-align:center;padding:18px">' + window.t('error_loading_orders') + '</p>';
           });
       }
 
       // Create test order for demo/testing
       function createTestOrder(user) {
-        if (!confirm('Create a test order with sample items?')) return;
+        if (!confirm(window.t('confirm_test_order'))) return;
         
         var testItems = {
           'Green Tea': 2,
@@ -405,11 +418,11 @@
           status: 'pending',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         }).then(function(){
-          alert('✓ Test order created successfully!');
+          alert(window.t('order_created'));
           loadOrders(user);
         }).catch(function(err){
           console.error(err);
-          alert('Failed to create test order: ' + err.message);
+          alert(window.t('failed_create_test_order') + err.message);
         });
       }
 
@@ -425,11 +438,12 @@
           if(doc.exists && doc.data().items){
             localStorage.setItem('cart', JSON.stringify(doc.data().items));
           }
-        }).catch(function(e){ console.warn('Failed to load cart from Firestore:', e); });
+        }).catch(function(e){ console.warn(window.t('error_loading_cart'), e); });
 
         // Auth header
         var dashAuth = document.getElementById('dash-auth');
-        dashAuth.innerHTML = '<span class="user-name">' + escapeHtml(user.displayName || user.email || 'User') + '</span><button id="dash-signout">Sign Out</button>';
+        var signOutText = window.t('sign_out');
+        dashAuth.innerHTML = '<span class="user-name">' + escapeHtml(user.displayName || user.email || 'User') + '</span><button id="dash-signout">' + signOutText + '</button>';
         document.getElementById('dash-signout').addEventListener('click', function(){ auth.signOut(); });
 
         initInfoForm(user);

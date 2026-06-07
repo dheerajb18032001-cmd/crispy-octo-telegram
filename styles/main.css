@@ -1174,6 +1174,38 @@ textarea {
   border-bottom: none;
 }
 
+/* ===== Language Selector ===== */
+.lang-selector {
+  padding: 8px 12px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.lang-selector:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1), var(--shadow-md);
+}
+
+.lang-selector:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), var(--shadow-md);
+}
+
+.lang-selector option {
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px;
+}
+
 .cart-table tbody tr:hover {
   background: rgba(16, 185, 129, 0.03);
 }
